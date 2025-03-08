@@ -1,0 +1,19 @@
+{
+    "name": "server",
+    "module": "index.ts",
+    "type": "module",
+    "private": true,
+    "scripts": {
+        "build": "bun build.ts",
+        "dev": "bun build.ts --watch"
+    },
+    "devDependencies": {
+        "@ragempcommunity/types-server": "^2.1.9",
+        "@types/bun": "latest",
+        "@types/node": "^22.13.10",
+        "tsup": "^8.4.0"
+    },
+    "peerDependencies": {
+        "typescript": "^5.8.2"
+    }
+}

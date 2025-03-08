@@ -1,0 +1,18 @@
+{
+  "name": "client",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "bun build.ts",
+    "dev": "bun build.ts --watch"
+  },
+  "devDependencies": {
+    "@ragempcommunity/types-client": "^2.1.9",
+    "@types/bun": "latest",
+    "tsup": "^8.4.0"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}

@@ -1,0 +1,23 @@
+{
+    "$schema": "https://turbo.build/schema.json",
+    "ui": "tui",
+    "tasks": {
+        "build": {
+            "dependsOn": ["prebuild", "^build"],
+            "outputs": ["output-file.txt", "dist/**"],
+            "inputs": ["$TURBO_DEFAULT$", ".env", ".env.local"]
+        },
+        "prebuild": {},
+        "lint": {},
+        "check-types": {},
+        "dev": {
+            "cache": false,
+            "persistent": true
+        },
+        "start": {
+            "cache": false,
+            "persistent": true,
+            "dependsOn": ["build"]
+        }
+    }
+}
