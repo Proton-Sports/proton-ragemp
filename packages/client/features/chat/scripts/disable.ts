@@ -1,4 +1,4 @@
-import { createScript } from '../../../kernel/script';
+import { createScript } from '@kernel/script';
 
 export default createScript({
     name: 'disable-rage-chat',
