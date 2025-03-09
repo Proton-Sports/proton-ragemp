@@ -12,11 +12,11 @@
       },
     },
     "apps/cli": {
-      "name": "cli",
+      "name": "@repo/cli",
       "dependencies": {
-        "client": "workspace:*",
-        "server": "workspace:*",
-        "ui": "workspace:*",
+        "@repo/client": "workspace:*",
+        "@repo/server": "workspace:*",
+        "@repo/ui": "workspace:*",
       },
       "devDependencies": {
         "@types/bun": "latest",
@@ -24,7 +24,7 @@
       },
     },
     "apps/ui": {
-      "name": "ui",
+      "name": "@repo/ui",
       "version": "0.0.0",
       "devDependencies": {
         "@sveltejs/vite-plugin-svelte": "^5.0.3",
@@ -40,37 +40,29 @@
       },
     },
     "packages/client": {
-      "name": "client",
-      "dependencies": {
-        "shared": "workspace:*",
-      },
+      "name": "@repo/client",
       "devDependencies": {
         "@ragempcommunity/types-client": "^2.1.9",
+        "@repo/shared": "workspace:*",
         "@types/bun": "latest",
         "tsup": "^8.4.0",
-      },
-      "peerDependencies": {
-        "typescript": "^5",
+        "typescript": "^5.8.2",
       },
     },
     "packages/server": {
-      "name": "server",
-      "dependencies": {
-        "pino": "^9.6.0",
-        "shared": "workspace:*",
-      },
+      "name": "@repo/server",
       "devDependencies": {
         "@ragempcommunity/types-server": "^2.1.9",
+        "@repo/shared": "workspace:*",
         "@types/bun": "latest",
         "@types/node": "^22.13.10",
+        "pino": "^9.6.0",
         "tsup": "^8.4.0",
-      },
-      "peerDependencies": {
         "typescript": "^5.8.2",
       },
     },
     "packages/shared": {
-      "name": "shared",
+      "name": "@repo/shared",
       "devDependencies": {
         "@types/bun": "latest",
       },
@@ -167,6 +159,16 @@
     "@ragempcommunity/types-client": ["@ragempcommunity/types-client@2.1.9", "", {}, "sha512-D6SdgzyyuHdQyVDSPVohII6EWbwmWTmOBynVU9BcIHxvtVbr82ZmQ+YzMVlihcEiOk/nt8aeWSzcrWdXXHkgeA=="],
 
     "@ragempcommunity/types-server": ["@ragempcommunity/types-server@2.1.9", "", {}, "sha512-J0aDQxzGBW3l8JniyDNZl17JJFXjjy59LHeQKjNgPk3kWpW/mOuPQ1L90euZFkAx0PPGT96IA3+bHq4zarNEmA=="],
+
+    "@repo/cli": ["@repo/cli@workspace:apps/cli"],
+
+    "@repo/client": ["@repo/client@workspace:packages/client"],
+
+    "@repo/server": ["@repo/server@workspace:packages/server"],
+
+    "@repo/shared": ["@repo/shared@workspace:packages/shared"],
+
+    "@repo/ui": ["@repo/ui@workspace:apps/ui"],
 
     "@rollup/rollup-android-arm-eabi": ["@rollup/rollup-android-arm-eabi@4.35.0", "", { "os": "android", "cpu": "arm" }, "sha512-uYQ2WfPaqz5QtVgMxfN6NpLD+no0MYHDBywl7itPYd3K5TjjSghNKmX8ic9S8NU8w81NVhJv/XojcHptRly7qQ=="],
 
@@ -321,10 +323,6 @@
     "cac": ["cac@6.7.14", "", {}, "sha512-b6Ilus+c3RrdDk+JhLKUAQfzzgLEPy6wcXqS7f/xe1EETvsDP6GORG7SFuOs6cID5YkqchW/LXZbX5bc8j7ZcQ=="],
 
     "chokidar": ["chokidar@4.0.3", "", { "dependencies": { "readdirp": "^4.0.1" } }, "sha512-Qgzu8kfBvo+cA4962jnP1KkS6Dop5NS6g7R5LFYJr4b8Ub94PPQXUksCw9PvXoeXPRRddRNC5C1JQUR2SMGtnA=="],
-
-    "cli": ["cli@workspace:apps/cli"],
-
-    "client": ["client@workspace:packages/client"],
 
     "clsx": ["clsx@2.1.1", "", {}, "sha512-eYm0QWBtUrBWZWG0d386OGAw16Z995PiOVo2B7bjWSbHedGl5e0ZWaq65kOGgUSNesEIDkB9ISbTg/JK9dhCZA=="],
 
@@ -508,10 +506,6 @@
 
     "safe-stable-stringify": ["safe-stable-stringify@2.5.0", "", {}, "sha512-b3rppTKm9T+PsVCBEOUR46GWI7fdOs00VKZ1+9c1EWDaDMvjQc6tUwuFyIprgGgTcWoVHSKrU8H31ZHA2e0RHA=="],
 
-    "server": ["server@workspace:packages/server"],
-
-    "shared": ["shared@workspace:packages/shared"],
-
     "shebang-command": ["shebang-command@2.0.0", "", { "dependencies": { "shebang-regex": "^3.0.0" } }, "sha512-kHxr2zZpYtdmrN1qDjrrX/Z1rR1kG8Dx+gkpK1G4eXmvXswmcE1hTWBWYUzlraYw1/yZp6YuDY77YtvbN0dmDA=="],
 
     "shebang-regex": ["shebang-regex@3.0.0", "", {}, "sha512-7++dFhtcx3353uBaq8DDR4NuxBetBzC7ZQOhmTQInHEd6bSrXdiEyzCvG07Z44UYdLShWUyXt5M/yhz8ekcb1A=="],
@@ -581,8 +575,6 @@
     "typescript": ["typescript@5.8.2", "", { "bin": { "tsc": "bin/tsc", "tsserver": "bin/tsserver" } }, "sha512-aJn6wq13/afZp/jT9QZmwEjDqqvSGp1VT5GVg+f/t6/oVyrgXM6BY1h9BRh/O5p3PlUPAe+WuiEZOmb/49RqoQ=="],
 
     "ufo": ["ufo@1.5.4", "", {}, "sha512-UsUk3byDzKd04EyoZ7U4DOlxQaD14JUKQl6/P7wiX4FNvUfm3XL246n9W5AmqwW5RSFJ27NAuM0iLscAOYUiGQ=="],
-
-    "ui": ["ui@workspace:apps/ui"],
 
     "unconfig": ["unconfig@7.0.0", "", { "dependencies": { "@antfu/utils": "^8.1.0", "defu": "^6.1.4", "jiti": "^2.4.2" } }, "sha512-G5CJSoG6ZTxgzCJblEfgpdRK2tos9+UdD2WtecDUVfImzQ0hFjwpH5RVvGMhP4pRpC9ML7NrC4qBsBl0Ttj35A=="],
 

@@ -1,5 +1,5 @@
 {
-  "name": "cli",
+  "name": "@repo/cli",
   "module": "index.ts",
   "type": "module",
   "private": true,
@@ -11,8 +11,8 @@
     "start": "bun run exec.ts | pino-pretty"
   },
   "dependencies": {
-    "client": "workspace:*",
-    "server": "workspace:*",
-    "ui": "workspace:*"
+    "@repo/client": "workspace:*",
+    "@repo/server": "workspace:*",
+    "@repo/ui": "workspace:*"
   }
 }

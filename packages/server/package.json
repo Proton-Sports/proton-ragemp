@@ -1,5 +1,5 @@
 {
-    "name": "server",
+    "name": "@repo/server",
     "module": "index.ts",
     "type": "module",
     "private": true,
@@ -13,9 +13,7 @@
         "@types/node": "^22.13.10",
         "tsup": "^8.4.0",
         "pino": "^9.6.0",
-        "shared": "workspace:*"
-    },
-    "peerDependencies": {
+        "@repo/shared": "workspace:*",
         "typescript": "^5.8.2"
     }
 }

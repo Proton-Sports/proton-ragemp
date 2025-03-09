@@ -1,5 +1,5 @@
 {
-    "name": "client",
+    "name": "@repo/client",
     "module": "index.ts",
     "type": "module",
     "private": true,
@@ -11,9 +11,7 @@
         "@ragempcommunity/types-client": "^2.1.9",
         "@types/bun": "latest",
         "tsup": "^8.4.0",
-        "shared": "workspace:*"
-    },
-    "peerDependencies": {
-        "typescript": "^5"
+        "@repo/shared": "workspace:*",
+        "typescript": "^5.8.2"
     }
 }
