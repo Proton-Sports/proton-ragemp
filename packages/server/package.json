@@ -11,7 +11,9 @@
         "@ragempcommunity/types-server": "^2.1.9",
         "@types/bun": "latest",
         "@types/node": "^22.13.10",
-        "tsup": "^8.4.0"
+        "tsup": "^8.4.0",
+        "pino": "^9.6.0",
+        "shared": "workspace:*"
     },
     "peerDependencies": {
         "typescript": "^5.8.2"

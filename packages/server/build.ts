@@ -8,12 +8,17 @@ declare global {
     }
 }
 
+const watch = process.argv.includes('--watch');
+
 await build({
     entry: ['index.ts'],
     format: 'esm',
-    target: 'esnext',
+    platform: 'node',
+    metafile: true,
+    target: 'node14',
     outDir: process.env.BUILD_OUTDIR,
     clean: true,
-    minify: process.argv.includes('--watch'),
-    watch: process.argv.includes('--watch'),
+    sourcemap: watch,
+    minify: !watch,
+    watch
 });
