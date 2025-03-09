@@ -17,4 +17,6 @@ await build({
     outDir: process.env.BUILD_OUTDIR,
     minify: process.argv.includes('--watch'),
     watch: process.argv.includes('--watch'),
+    splitting: true,
+    platform: 'neutral'
 });
