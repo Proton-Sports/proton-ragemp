@@ -2,6 +2,5 @@
 </script>
 
 <main>
-    <h1>App</h1>
-    <p>Welcome to the app!</p>
+    <h1 class="text-blue-5">Hello world</h1>
 </main>
