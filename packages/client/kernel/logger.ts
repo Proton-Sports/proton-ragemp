@@ -1,8 +1,8 @@
 export interface Logger {
-    info(message: string): void;
-    warning(message: string): void;
-    error(message: string): void;
-    fatal(message: string): void;
+    info(...messages: unknown[]): void;
+    warning(...message: unknown[]): void;
+    error(...message: unknown[]): void;
+    fatal(...message: unknown[]): void;
     clear(): void;
     reset(): void;
 }
@@ -13,17 +13,17 @@ interface LogOptions {
 
 export const createMpLogger = ({ save = false }: LogOptions = { save: false }): Logger => {
     return {
-        info: (message, options?: LogOptions) => {
-            mp.console.logInfo(message, options?.save ?? save, options?.save ?? save);
+        info: (...messages) => {
+            mp.console.logInfo(messages.map((a) => a + '').join(' '), save, save);
         },
-        warning: (message, options?: LogOptions) => {
-            mp.console.logWarning(message, options?.save ?? save, options?.save ?? save);
+        warning: (...messages) => {
+            mp.console.logWarning(messages.map((a) => a + '').join(' '), save, save);
         },
-        error: (message, options?: LogOptions) => {
-            mp.console.logError(message, options?.save ?? save, options?.save ?? save);
+        error: (...messages) => {
+            mp.console.logError(messages.map((a) => a + '').join(' '), save, save);
         },
-        fatal: (message, options?: LogOptions) => {
-            mp.console.logFatal(message, options?.save ?? save, options?.save ?? save);
+        fatal: (...messages) => {
+            mp.console.logFatal(messages.map((a) => a + '').join(' '), save, save);
         },
         clear: () => {
             mp.console.clear();
