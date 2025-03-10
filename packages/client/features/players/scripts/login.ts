@@ -15,12 +15,13 @@ export default createScript({
                         game.freezeControls(false);
                         ui.focus(false);
                         logger.info('success', token);
+                        ui.unmount('login');
                     } catch (e) {
                         logger.error(e);
                     }
                 });
             }
         });
-        ui.publish('router.mount', 'login');
+        ui.mount('login');
     },
 });

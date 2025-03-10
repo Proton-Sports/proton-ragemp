@@ -4,13 +4,15 @@ export type Ui = BrowserMp & {
     on(name: string, handler: (...args: any[]) => void): void;
     publish(name: string, ...args: unknown[]): void;
     focus(toggle: boolean): void;
+    mount(route: string): void;
+    unmount(route: string): void;
 };
 
 export const createUi = (url: string): Ui => {
     const browser = mp.browsers.new(url);
     let focusLock = createLock();
 
-    return Object.assign(browser, {
+    const ext = {
         on,
         publish: (name: string, ...args: unknown[]) => {
             browser.call(name, ...args);
@@ -28,7 +30,15 @@ export const createUi = (url: string): Ui => {
                 });
             }
         },
-    });
+        mount: (route: string) => {
+            ext.publish('router.mount', route);
+        },
+        unmount: (route: string) => {
+            ext.publish('router.unmount', route);
+        },
+    };
+
+    return Object.assign(browser, ext);
 };
 
 const on: Ui['on'] = (name, handler) => {
