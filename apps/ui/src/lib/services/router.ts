@@ -11,6 +11,7 @@ export const createRouter = (): Router => {
     const routes = new SvelteSet<string>();
     return {
         mount: (route) => {
+            console.log('mount', route);
             routes.add(route);
         },
         unmount: (route) => {
