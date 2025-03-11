@@ -22,8 +22,8 @@ export const createToggle = (callback: (toggle: boolean) => void) => {
     };
 };
 
-export const tryPromise = <TData, TError>(fn: () => Promise<TData>) => {
-    return async (mapException?: (e: unknown) => TError): Promise<Try<TData, TError>> => {
+export const tryPromise = <TData>(fn: () => Promise<TData>) => {
+    return async <TError>(mapException?: (e: unknown) => TError): Promise<Try<TData, TError>> => {
         try {
             return {
                 ok: true,
