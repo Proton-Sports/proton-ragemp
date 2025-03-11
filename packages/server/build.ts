@@ -12,7 +12,7 @@ const watch = process.argv.includes('--watch');
 
 await build({
     entry: ['index.ts'],
-    format: 'esm',
+    format: 'cjs',
     platform: 'node',
     metafile: true,
     target: 'node14',
@@ -20,5 +20,6 @@ await build({
     clean: true,
     sourcemap: watch,
     minify: !watch,
-    watch
+    watch,
+    outExtension: () => ({ js: '.js' }),
 });

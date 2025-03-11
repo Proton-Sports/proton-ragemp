@@ -3,13 +3,15 @@ import players from '@features/players/scripts';
 import { createUi } from '@features/ui';
 import { createGame } from '@kernel/game';
 import { createMpLogger } from '@kernel/logger';
+import { createRemoteMessenger } from '@kernel/messenger';
 import { type Runtime } from '@kernel/runtime';
 
-const runtime: Runtime = ({
+const runtime: Runtime = {
     ui: createUi('http://localhost:5173'),
     logger: createMpLogger({ save: true }),
-    game: createGame()
-});
+    game: createGame(),
+    messenger: createRemoteMessenger(),
+};
 
 for (const script of [...chat, ...players]) {
     script.fn(runtime);

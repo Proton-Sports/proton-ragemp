@@ -1,7 +1,12 @@
 import type { Logger } from 'pino';
+import type { Messenger } from './messenger';
 
 export interface Runtime {
-    logger: Logger;
+    readonly logger: Logger;
+    readonly messenger: Messenger;
+    readonly fetch: typeof import('node-fetch')['default'];
+    readonly env: {
+        readonly DISCORD_OAUTH2_CLIENT_ID: string;
+        readonly DISCORD_OAUTH2_CLIENT_SECRET: string;
+    };
 }
-
-export const createRuntime = (runtime: Runtime) => runtime;

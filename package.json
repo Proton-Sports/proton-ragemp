@@ -8,8 +8,8 @@
         "start": "turbo run start"
     },
     "devDependencies": {
-        "turbo": "^2.4.4",
-        "@types/bun": "latest"
+        "@types/bun": "latest",
+        "turbo": "^2.4.4"
     },
     "packageManager": "bun@1.2.3",
     "workspaces": [
