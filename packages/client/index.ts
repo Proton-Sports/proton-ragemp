@@ -11,6 +11,7 @@ const runtime: Runtime = {
     logger: createMpLogger({ save: true }),
     game: createGame(),
     messenger: createRemoteMessenger(),
+    fetch: globalThis.fetch,
 };
 
 for (const script of [...chat, ...players]) {

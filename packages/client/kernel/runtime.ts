@@ -8,4 +8,5 @@ export interface Runtime {
     readonly logger: Logger;
     readonly game: Game;
     readonly messenger: Messenger;
+    readonly fetch: typeof globalThis.fetch;
 }

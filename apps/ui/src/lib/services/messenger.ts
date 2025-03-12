@@ -1,3 +1,5 @@
+import { tryParseJSON } from '$lib/utils';
+import { hashUiEventName } from '@repo/shared';
 import { onMount } from 'svelte';
 
 export interface Messenger {
@@ -8,13 +10,22 @@ export interface Messenger {
 export const createMessenger = (): Messenger => {
     return {
         publish: (name, ...args) => {
-            mp.trigger(name, ...args);
+            mp.trigger(hashUiEventName(name), ...args);
         },
         on(name, callback) {
             onMount(() => {
-                mp.events.add(name, callback);
+                const hashed = hashUiEventName(name);
+                const wrapped = (...args: any[]) => {
+                    callback(
+                        ...args.map((a) => {
+                            const tryParse = tryParseJSON(a);
+                            return tryParse.ok ? tryParse.data : a;
+                        }),
+                    );
+                };
+                mp.events.add(hashed, wrapped);
                 return () => {
-                    mp.events.remove(name);
+                    mp.events.remove(hashed);
                 };
             });
         },

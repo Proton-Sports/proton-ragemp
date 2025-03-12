@@ -1,5 +1,6 @@
-import { combineCleanup, createToggle, tryPromise } from '@repo/shared/utils';
 import { createScript } from '@kernel/script';
+import { type DiscordOAuth2Token, type DiscordUser } from '@repo/shared/discord';
+import { combineCleanup, createToggle, tryPromise } from '@repo/shared/utils';
 
 export default createScript({
     name: 'login',
@@ -21,11 +22,17 @@ export default createScript({
                         messenger.publish('login.discord', tryRequest.data);
                     }
                 }),
-                messenger.on('login.discord.success', () => {
-                    ui.router.unmount('login');
-                }),
                 messenger.on('login.discord.error', (code: string) => {
                     ui.publish('login.discord.error', code);
+                }),
+                messenger.on('login.discord.token', (token: DiscordOAuth2Token) => {
+                    ui.publish('login.discord.token', token);
+                }),
+                ui.on('login.discord.confirm', () => {
+                    messenger.publish('login.discord.confirm');
+                }),
+                messenger.on('login.discord.confirm', () => {
+                    ui.router.unmount('login');
                 }),
                 () => toggle(false),
             );

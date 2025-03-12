@@ -1,4 +1,5 @@
 import { createLock } from '@repo/shared/lock';
+import { hashUiEventName } from '@repo/shared/utils';
 
 export type Ui = BrowserMp & {
     on(name: string, handler: (...args: any[]) => void): () => void;
@@ -21,7 +22,7 @@ export const createUi = (url: string): Ui => {
     const ext = {
         on,
         publish: (name: string, ...args: unknown[]) => {
-            browser.call(name, ...args);
+            browser.call(hashUiEventName(name), ...args);
         },
         focus: (toggle: boolean) => {
             if (toggle) {
@@ -69,7 +70,7 @@ const createRouter = (browser: BrowserMp): UiRouter => {
         handlers.splice(index, 1);
     };
 
-    mp.events.add('router.mount', (route: string) => {
+    mp.events.add('ui.router.mount', (route: string) => {
         const handlers = onMountHandlers.get(route);
         if (handlers != null) {
             for (const handler of handlers) {
@@ -81,7 +82,7 @@ const createRouter = (browser: BrowserMp): UiRouter => {
         }
     });
 
-    mp.events.add('router.unmount', (route: string) => {
+    mp.events.add('ui.router.unmount', (route: string) => {
         const transientHandlers = transientOnDestroyHandlers.get(route);
         for (const handler of [...(onDestroyHandlers.get(route) ?? []), ...(transientHandlers ?? [])]) {
             handler();
@@ -93,10 +94,10 @@ const createRouter = (browser: BrowserMp): UiRouter => {
 
     return {
         mount: (route: string) => {
-            browser.call('router.mount', route);
+            browser.call('ui.router.mount', route);
         },
         unmount: (route: string) => {
-            browser.call('router.unmount', route);
+            browser.call('ui.router.unmount', route);
         },
         onMount: (route, handler) => {
             addHandler(onMountHandlers, route, handler);
@@ -114,8 +115,9 @@ const createRouter = (browser: BrowserMp): UiRouter => {
 };
 
 const on: Ui['on'] = (name, handler) => {
-    mp.events.add(name, handler);
+    const hashed = hashUiEventName(name);
+    mp.events.add(hashed, handler);
     return () => {
-        mp.events.remove(name, handler);
+        mp.events.remove(hashed, handler);
     };
 };

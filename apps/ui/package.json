@@ -11,6 +11,7 @@
     },
     "devDependencies": {
         "@ragempcommunity/types-cef": "^2.1.9",
+        "@repo/shared": "workspace:*",
         "@sveltejs/vite-plugin-svelte": "^5.0.3",
         "@tsconfig/svelte": "^5.0.4",
         "@types/node": "^22.13.10",

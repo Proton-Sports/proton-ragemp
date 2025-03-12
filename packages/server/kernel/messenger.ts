@@ -1,3 +1,5 @@
+import { hashServerEventName } from '@repo/shared';
+
 export interface Messenger {
     on(name: string, handler: (player: PlayerMp, ...args: any[]) => void): () => void;
     publish(player: PlayerMp, name: string, ...args: unknown[]): void;
@@ -8,21 +10,23 @@ export interface Messenger {
 export const createRemoteMessenger = (): Messenger => {
     return {
         on: (name, handler) => {
-            mp.events.add(name, handler);
+            const hashed = hashServerEventName(name);
+            mp.events.add(hashed, handler);
 
             return () => {
-                mp.events.remove(name, handler);
+                mp.events.remove(hashed, handler);
             };
         },
         publish: (playerOrPlayers, name, ...args) => {
+            const hashed = hashServerEventName(name);
             if (!Array.isArray(playerOrPlayers)) {
-                playerOrPlayers.call(name, args);
+                playerOrPlayers.call(hashed, args);
             } else {
-                mp.players.call(playerOrPlayers, name, args);
+                mp.players.call(playerOrPlayers, hashed, args);
             }
         },
         publishAll: (name, ...args) => {
-            mp.players.call(name, args);
+            mp.players.call(hashServerEventName(name), args);
         },
     };
 };

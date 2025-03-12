@@ -1,7 +1,6 @@
 <script lang="ts">
     import type { Snippet, SvelteComponent } from 'svelte';
     import { useRuntime } from '../services/runtime';
-    import { SvelteSet } from 'svelte/reactivity';
 
     const {
         children,
