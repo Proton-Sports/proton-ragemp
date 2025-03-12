@@ -17,9 +17,7 @@ export const combineCleanup = (...cleanups: (() => void)[]): (() => void) => {
 };
 
 export const createToggle = (callback: (toggle: boolean) => void) => {
-    return (toggle: boolean) => {
-        callback(toggle);
-    };
+    return callback;
 };
 
 export const tryDo = <TData>(fn: () => TData) => {
