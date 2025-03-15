@@ -1,0 +1,68 @@
+.c-button {
+    &:where([data-variant='base']) {
+        --_bg: rgb(var(--color-base-bg-1));
+        --_bg-disabled: rgb(var(--color-base-bg-1-disabled));
+        --_bg-hover: rgb(var(--color-base-bg-1-hover));
+        --_bg-active: rgb(var(--color-base-bg-1-active));
+        --_text: rgb(var(--color-base-fg-1));
+        --_text-hover: rgb(var(--color-base-fg-1));
+        --_text-active: rgb(var(--color-base-fg-1));
+        --_text-disabled: rgb(var(--color-base-fg-1-disabled));
+        --_border: rgb(var(--color-base-border-1));
+        --_border-disabled: rgb(var(--color-base-border-1-disabled));
+    }
+
+    &:where([data-variant='primary']) {
+        --_bg: rgb(var(--color-brand-bg-1));
+        --_bg-disabled: rgb(var(--color-brand-bg-1-disabled));
+        --_bg-hover: rgb(var(--color-brand-bg-1-hover));
+        --_bg-active: rgb(var(--color-brand-bg-1-active));
+        --_text: rgb(var(--color-brand-on-bg-1));
+        --_text-hover: rgb(var(--color-brand-on-bg-1));
+        --_text-active: rgb(var(--color-brand-on-bg-1));
+        --_text-disabled: rgb(var(--color-brand-on-bg-1-disabled));
+        --_border: transparent;
+        --_border-disabled: transparent;
+    }
+
+    &:where([data-variant='subtle']) {
+        --_bg: transparent;
+        --_bg-disabled: transparent;
+        --_bg-hover: rgb(var(--color-subtle-bg-hover));
+        --_bg-active: rgb(var(--color-subtle-bg-active));
+        --_text: rgb(var(--color-base-fg-2));
+        --_text-hover: rgb(var(--color-base-fg-2-hover));
+        --_text-active: rgb(var(--color-base-fg-2-active));
+        --_text-disabled: rgb(var(--color-base-fg-1-disabled));
+        --_border: transparent;
+        --_border-disabled: transparent;
+    }
+}
+
+.c-button {
+    padding: theme('padding[2]') theme('padding[6]');
+    background-color: var(--_bg);
+    color: var(--_text);
+    border: 1px solid var(--_border);
+    border-radius: theme('borderRadius[md]');
+    user-select: none;
+    transition-property: color, background-color;
+    transition-duration: 150ms;
+    transition-timing-function: var(--cubic-in-out);
+
+    &:where(:hover) {
+        background-color: var(--_bg-hover);
+        color: var(--_text-hover);
+    }
+
+    &:where(:active) {
+        background-color: var(--_bg-active);
+        color: var(--_text-active);
+    }
+
+    &:where(:disabled) {
+        background-color: var(--_bg-disabled);
+        color: var(--_text-disabled);
+        border-color: var(--_border-disabled);
+    }
+}

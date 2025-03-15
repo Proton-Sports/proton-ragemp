@@ -7,8 +7,8 @@ export interface Router {
     unmount: (name: string) => void;
 }
 
-export const createRouter = (): Router => {
-    const routes = new SvelteSet<string>();
+export const createRouter = (defaultRoutes?: string[]): Router => {
+    const routes = new SvelteSet<string>(defaultRoutes);
     return {
         mount: (route) => {
             routes.add(route);

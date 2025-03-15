@@ -7,7 +7,7 @@
 </script>
 
 {#if mp.isBrowser}
-    <div class="fixed inset-0 bg-green-5"></div>
+    <div class="fixed inset-0 bg-green-500"></div>
 {/if}
 <Runtime messenger={createMessenger()} router={createRouter()}>
     <Router>

@@ -1,14 +1,42 @@
-/* @import 'reset.css'; */
+@import './reset.css';
+@import './theme.gen.css';
+@import 'lib/stylesheets/tw/base.css';
+
+@import 'lib/stylesheets/tw/components.css';
+@import 'lib/stylesheets/components/c-button.css';
+
+@import 'lib/stylesheets/tw/utilities.css';
 
 :root {
-    font-family: 'DM Sans', system-ui, Avenir, Helvetica, Arial, sans-serif;
+    --font-family-base: system-ui, Avenir, Helvetica, Arial, sans-serif;
+    --font-family-sans: 'Segoe UI Variable Text', var(--font-family-base);
+    --font-family-display: 'Segoe UI Variable Display', var(--font-family-base);
+    --cubic-out: cubic-bezier(0.33, 1, 0.68, 1);
+    --cubic-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+:root {
+    font-family: var(--font-family-sans);
     line-height: 1;
     font-weight: 400;
 
-    color: white;
-    font-size: calc(3vmin);
+    color: rgb(var(--color-base-fg-1));
+    font-size: calc(2.2vmin);
 }
 
 body {
     margin: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: var(--font-family-display);
+}
+
+button {
+    font-family: var(--font-family-display);
 }

@@ -1,6 +1,6 @@
 import { tryDo, type Try } from '@repo/shared';
 
-var jsonRegex = /^\{[\s\S]*\}$|^\[[\s\S]*\]$/;
+const jsonRegex = /^\{[\s\S]*\}$|^\[[\s\S]*\]$/;
 
 export const tryParseJSON = (value: unknown): Try<unknown, unknown> => {
     if (typeof value !== 'string') {
