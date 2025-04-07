@@ -1,0 +1,3 @@
+.wrapper {
+  mask: linear-gradient(90deg, transparent, white 20%, white 80%, transparent);
+}

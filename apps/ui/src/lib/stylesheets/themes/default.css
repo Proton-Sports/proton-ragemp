@@ -1,0 +1,27 @@
+:root {
+  --theme-accent-1: var(--color-brand-500);
+  --theme-accent-2: var(--color-brand-700);
+
+  --theme-primary: var(--color-brand-500);
+  --theme-primary-fg: var(--color-grey-950);
+  --theme-primary-hover: var(--color-brand-600);
+  --theme-primary-active: var(--color-brand-700);
+  --theme-primary-disabled: var(--color-brand-800);
+
+  --theme-fg: var(--color-grey-50);
+  --theme-fg-hover: var(--color-grey-200);
+  --theme-fg-active: var(--color-grey-300);
+  --theme-fg-disabled: var(--color-grey-500);
+
+  --theme-bg-1: var(--color-grey-950);
+  --theme-bg-2: var(--color-grey-900);
+  --theme-bg-3: var(--color-grey-800);
+  --theme-bg-border: 0 0% 6.2%;
+  --theme-bg-hover: var(--color-grey-800);
+  --theme-bg-active: var(--color-grey-700);
+  --theme-bg-disabled: var(--color-grey-700);
+
+  --theme-fg-1: var(--color-grey-50);
+  --theme-fg-2: var(--color-grey-200);
+  --theme-fg-3: var(--color-grey-500);
+}

@@ -1,8 +1,8 @@
 import { createRemoteMessenger } from '@kernel/messenger';
+import dotenv from 'dotenv';
 import fetch from 'node-fetch';
 import pino from 'pino';
-import players from './features/players/scripts';
-import dotenv from 'dotenv';
+import auth from './features/auth/scripts';
 
 dotenv.config();
 
@@ -20,7 +20,7 @@ const runtime = {
     },
 };
 
-for (const script of [...players]) {
+for (const script of [...auth]) {
     script.fn(
         Object.assign(runtime, {
             logger: runtime.logger.child({ instance: `script:${script.name}` }),

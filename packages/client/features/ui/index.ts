@@ -9,7 +9,7 @@ export type Ui = BrowserMp & {
 };
 
 export interface UiRouter {
-    mount(route: string): void;
+    mount(route: string, props?: Record<string, unknown>): void;
     unmount(route: string): void;
     onMount(route: string, handler: (...args: any[]) => void | (() => void)): void;
     onDestroy(route: string, handler: (...args: any[]) => void | (() => void)): void;
@@ -17,7 +17,7 @@ export interface UiRouter {
 
 export const createUi = (url: string): Ui => {
     const browser = mp.browsers.new(url);
-    let focusLock = createLock();
+    const focusLock = createLock();
 
     const ext = {
         on,
@@ -70,7 +70,9 @@ const createRouter = (browser: BrowserMp): UiRouter => {
         handlers.splice(index, 1);
     };
 
-    mp.events.add('ui.router.mount', (route: string) => {
+    mp.console.logInfo(`mp.events.add ${hashUiEventName('ui.router.mount')}`);
+    mp.events.add(hashUiEventName('ui.router.mount'), (route: string) => {
+        mp.console.logInfo('ui.router.mount ' + route);
         const handlers = onMountHandlers.get(route);
         if (handlers != null) {
             for (const handler of handlers) {
@@ -82,7 +84,7 @@ const createRouter = (browser: BrowserMp): UiRouter => {
         }
     });
 
-    mp.events.add('ui.router.unmount', (route: string) => {
+    mp.events.add(hashUiEventName('ui.router.unmount'), (route: string) => {
         const transientHandlers = transientOnDestroyHandlers.get(route);
         for (const handler of [...(onDestroyHandlers.get(route) ?? []), ...(transientHandlers ?? [])]) {
             handler();
@@ -94,10 +96,10 @@ const createRouter = (browser: BrowserMp): UiRouter => {
 
     return {
         mount: (route: string) => {
-            browser.call('ui.router.mount', route);
+            browser.call(hashUiEventName('ui.router.mount'), route);
         },
         unmount: (route: string) => {
-            browser.call('ui.router.unmount', route);
+            browser.call(hashUiEventName('ui.router.unmount'), route);
         },
         onMount: (route, handler) => {
             addHandler(onMountHandlers, route, handler);

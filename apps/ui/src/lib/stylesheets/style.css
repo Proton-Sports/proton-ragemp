@@ -1,0 +1,158 @@
+@tailwind base;
+
+@font-face {
+  font-family: 'bold';
+  src: url(../assets/fonts/SFPRODISPLAYBOLD.OTF);
+}
+
+@font-face {
+  font-family: 'normal';
+  src: url(../assets/fonts/SFPRODISPLAYREGULAR.OTF);
+}
+
+@font-face {
+  font-family: 'medium';
+  src: url(../assets/fonts/SFPRODISPLAYMEDIUM.OTF);
+}
+
+@font-face {
+  font-family: 'digital_dream';
+  src: url(../assets/fonts/DIGITALDREAMFATSKEW.ttf);
+}
+
+@font-face {
+  font-family: 'fugaz';
+  src: url(../assets/fonts/FugazOne-Regular.ttf);
+}
+
+.font-bold {
+  font-family: 'bold';
+}
+
+body {
+  overflow: hidden !important;
+}
+
+.fugaz {
+  font-family: 'fugaz';
+}
+
+.digital-dream {
+  font-family: 'digital_dream';
+}
+
+.bg-light {
+  background-color: rgb(69, 57, 241);
+  opacity: 0.6;
+  width: 80vh;
+  height: 80vh;
+  filter: blur(17vh);
+  position: absolute;
+  top: 20%;
+  left: 10%;
+  transform: translate(-50%, -50%);
+  border-radius: 100vh;
+  z-index: -1;
+}
+
+.bg-light2 {
+  background-color: rgb(158, 57, 241);
+  opacity: 0.6;
+  width: 80vh;
+  height: 80vh;
+  filter: blur(17vh);
+  position: absolute;
+  top: 70%;
+  left: 20%;
+  transform: translate(-50%, -50%);
+  border-radius: 100vh;
+  z-index: -1;
+}
+
+.bg-light3 {
+  background-color: rgb(180, 55, 252);
+  opacity: 0.6;
+  width: 80vh;
+  height: 80vh;
+  filter: blur(17vh);
+  position: absolute;
+  top: 30%;
+  left: 55%;
+  transform: translate(-50%, -50%);
+  border-radius: 100vh;
+  z-index: -1;
+}
+
+.bg-light4 {
+  background-color: rgb(54, 149, 212);
+  opacity: 0.6;
+  width: 80vh;
+  height: 80vh;
+  filter: blur(17vh);
+  position: absolute;
+  top: 90%;
+  left: 85%;
+  transform: translate(-50%, -50%);
+  border-radius: 100vh;
+  z-index: -1;
+}
+
+.text-fix {
+  height: 5vh;
+  width: 5vh;
+  line-height: 4.2vh;
+}
+
+.text-fix2 {
+  height: 5vh;
+  line-height: 4.2vh;
+}
+
+.text-fix2 > p {
+  margin-left: 1.1vh;
+}
+
+.text-fix > p {
+  margin-left: 0.6vh;
+}
+
+.text-fix3 {
+  height: 5vh;
+  line-height: 4.2vh;
+}
+
+.text-fix3 > p {
+  margin-left: 3vh;
+}
+
+::-webkit-scrollbar {
+  width: 0.4vh;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 1);
+  border-radius: 100000px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: rgb(77, 77, 77);
+  border-radius: 100000px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: rgb(84, 84, 84);
+}
+
+.item {
+  opacity: 1 !important;
+  transition: 0.3s;
+}
+
+.racing-menu-list-bg {
+  background-image: url('../assets/images/racing_menu_list_bg.png');
+  background-repeat: no-repeat;
+  background-position: left;
+  background-size: contain;
+}

@@ -16,8 +16,6 @@
         "apps/*",
         "packages/*"
     ],
-    "module": "index.ts",
-    "type": "module",
     "peerDependencies": {
         "typescript": "^5.8.2"
     }

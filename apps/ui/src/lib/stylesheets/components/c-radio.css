@@ -1,0 +1,42 @@
+.c-radio {
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  gap: theme('width[2]');
+
+  &:before {
+    content: '';
+    display: block;
+    width: theme('width[4]');
+    height: theme('width[4]');
+    border: theme('width[0.5]') solid theme('colors.bg.3');
+    background: theme('colors.bg.2');
+    border-radius: 9999px;
+    transition: all 100ms ease-in-out;
+  }
+
+  &[data-pressed]:before {
+    border-color: theme('colors.bg.active');
+  }
+
+  &[data-selected] {
+    &:before {
+      border-color: transparent;
+      background-color: theme('colors.fg.1');
+    }
+  }
+
+  &[data-focus-visible]:before {
+    outline: theme('width[0.5]') solid currentColor;
+    outline-offset: theme('width[0.5]');
+  }
+
+  &[data-hovered]:before {
+    border-color: theme('colors.fg.hover');
+    transform: scale(1.1);
+  }
+
+  &[data-pressed]:before {
+    transform: scale(0.8);
+  }
+}

@@ -1,0 +1,127 @@
+@import 'lib/assets/fonts/Inter/inter.css';
+@import 'lib/stylesheets/tailwindcss/base.css';
+@import 'lib/stylesheets/style.css';
+@import 'lib/stylesheets/themes/primitives.css';
+@import 'lib/stylesheets/themes/default.css';
+
+@import 'lib/stylesheets/tailwindcss/components.css';
+@import 'lib/stylesheets/components/c-btn.css';
+@import 'lib/stylesheets/components/c-checkbox.css';
+@import 'lib/stylesheets/components/c-input.css';
+@import 'lib/stylesheets/components/c-radio.css';
+@import 'lib/stylesheets/components/c-textarea.css';
+
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --font-family-base: InterVariable, system-ui, Avenir, Helvetica, Arial, sans-serif;
+    --font-family-number: 'Antonio', var(--font-family-base);
+
+    font-family: var(--font-family-base);
+    font-weight: 400;
+    font-size: calc(1.4vmin + 0.2vmax);
+    line-height: 1.5;
+
+    color-scheme: light;
+    color: theme('colors.fg.1');
+
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  @supports (font-variation-settings: normal) {
+    :root {
+      font-optical-sizing: auto;
+    }
+  }
+
+  h1 {
+    font-size: theme('fontSize.4xl');
+  }
+
+  h2 {
+    font-size: theme('fontSize.3xl');
+  }
+
+  h3 {
+    font-size: theme('fontSize.2xl');
+  }
+
+  h4 {
+    font-size: theme('fontSize.xl');
+  }
+
+  h5 {
+    font-size: theme('fontSize.lg');
+  }
+
+  h6 {
+    font-size: theme('fontSize.md');
+  }
+
+  sm {
+    font-size: theme('fontSize.sm');
+  }
+
+  button,
+  input {
+    line-height: 1;
+  }
+
+  .slanted {
+    --p: 7%;
+    clip-path: polygon(0 0, 100% 0, calc(100% - var(--p)) 100%, 0 100%);
+  }
+
+  @keyframes slideDown {
+    from {
+      height: 0;
+      opacity: 0;
+    }
+    to {
+      height: var(--height);
+      opacity: 1;
+    }
+  }
+
+  @keyframes slideUp {
+    from {
+      height: var(--height);
+    }
+    to {
+      height: 0;
+      opacity: 0;
+    }
+  }
+
+  [data-scope='accordion'][data-part='item-content'] {
+    overflow: hidden;
+  }
+
+  [data-scope='accordion'][data-part='item-content'][data-state='open'] {
+    animation: slideDown 150ms cubic-bezier(0.65, 0, 0.35, 1);
+  }
+
+  [data-scope='accordion'][data-part='item-content'][data-state='closed'] {
+    animation: slideUp 150ms cubic-bezier(0.65, 0, 0.35, 1);
+  }
+}
+.colorful-picker .react-colorful {
+  width: 100%;
+  height: 100%;
+}
+.colorful-picker .react-colorful__saturation {
+  border-radius: 4px 4px 0 0;
+}
+.colorful-picker .react-colorful__hue {
+  height: 1rem;
+  border-radius: 0 0 4px 4px;
+}
+.colorful-picker .react-colorful__pointer {
+  width: 1rem;
+  height: 1rem;
+  border: 0.15rem solid white;
+}

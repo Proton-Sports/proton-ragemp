@@ -1,0 +1,25 @@
+:root {
+  --color-brand-50: 5 100% 94.9%;
+  --color-brand-100: 4 100% 89%;
+  --color-brand-200: 4 100% 79%;
+  --color-brand-300: 4 100% 68%;
+  --color-brand-400: 4 100% 58%;
+  --color-brand-500: 4 100% 47.1%;
+  --color-brand-600: 4 100% 38%;
+  --color-brand-700: 4 100% 28%;
+  --color-brand-800: 4 100% 19%;
+  --color-brand-900: 4 100% 9%;
+  --color-brand-950: 5 100% 4.9%;
+
+  --color-grey-50: 0 0% 96.9%;
+  --color-grey-100: 0 0% 92.2%;
+  --color-grey-200: 0 0% 82%;
+  --color-grey-300: 0 0% 72.2%;
+  --color-grey-400: 0 0% 63.1%;
+  --color-grey-500: 0 0% 52.9%;
+  --color-grey-600: 0 0% 43.1%;
+  --color-grey-700: 0 0% 32.9%;
+  --color-grey-800: 0 0% 23.1%;
+  --color-grey-900: 0 0% 12.9%;
+  --color-grey-950: 0 0% 8.2%;
+}

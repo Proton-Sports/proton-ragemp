@@ -1,0 +1,73 @@
+.c-btn {
+  @apply px-4 py-2 pt-3 transition-colors;
+  border: theme('width.1') black solid;
+  border-top: theme('width[0.5]') black solid;
+  border-radius: theme('borderRadius.xl');
+  position: relative;
+  overflow: hidden;
+  z-index: 10;
+  outline: none;
+
+  &:disabled::before {
+    box-shadow: inset 0 theme('width[1]') theme('width[0.5]') rgb(255 255 255 / 0.4);
+  }
+}
+
+.c-btn::before {
+  content: '';
+  background-color: rgba(255, 255, 255, 0);
+  box-shadow: inset 0 theme('width[1]') theme('width[0.5]') rgb(255, 255, 255);
+  border-radius: theme('borderRadius.xl');
+  width: 102%;
+  height: 100%;
+  position: absolute;
+  top: calc(theme('width[0.5]') * -1);
+  left: -1%;
+  z-index: -1;
+}
+
+.c-btn--primary {
+  @apply text-primary-fg bg-primary;
+
+  &.c-btn-transparent {
+    @apply bg-primary/70;
+  }
+
+  &:disabled {
+    @apply text-fg-disabled bg-primary-disabled;
+  }
+
+  &:not(:disabled) {
+    @apply hover:bg-primary-hover active:bg-primary-active;
+  }
+}
+
+.c-btn--base {
+  &.c-btn-transparent {
+    @apply bg-bg-2/70;
+  }
+
+  @apply text-fg bg-bg-2 hover:bg-bg-hover active:bg-bg-active disabled:text-fg-disabled disabled:bg-bg-disabled;
+}
+
+.proton-container {
+  border: theme('width[1]') black solid;
+  border-top: theme('width[0.5]') black solid;
+  border-radius: theme('borderRadius.xl');
+  position: relative;
+  overflow: hidden;
+  z-index: 10;
+  outline: none;
+}
+
+.proton-container::before {
+  content: '';
+  box-shadow: inset 0 theme('width[2]') 0.175rem rgb(255 255 255);
+  border-radius: theme('borderRadius.xl');
+  width: 102%;
+  height: 100%;
+  position: absolute;
+  top: calc(theme('width[0.5]') * -1);
+  left: -1%;
+  z-index: -1;
+}

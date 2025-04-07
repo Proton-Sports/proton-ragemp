@@ -1,0 +1,17 @@
+.c-textarea {
+  color: theme('colors.fg.1');
+  background-color: theme('colors.bg.1');
+  padding: theme('padding[2]');
+  border: theme('width[0.5]') solid theme('colors.bg.border');
+  border-radius: theme('borderRadius.DEFAULT');
+  width: 100%;
+  transition: outline 100ms ease-in-out;
+
+  &:focus-visible {
+    outline: theme('width[0.5]') solid currentColor;
+    outline-offset: theme('width[0.5]');
+  }
+  &::placeholder {
+    color: theme('colors.fg.1/0.4');
+  }
+}

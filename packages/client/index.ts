@@ -1,4 +1,5 @@
 import chat from '@features/chat/scripts';
+import auth from '@features/auth/scripts';
 import players from '@features/players/scripts';
 import { createUi } from '@features/ui';
 import { createGame } from '@kernel/game';
@@ -14,7 +15,7 @@ const runtime: Runtime = {
     fetch: globalThis.fetch,
 };
 
-for (const script of [...chat, ...players]) {
+for (const script of [...chat, ...players, ...auth]) {
     script.fn(runtime);
     runtime.logger.info(`Loaded script: ${script.name}.`);
 }
