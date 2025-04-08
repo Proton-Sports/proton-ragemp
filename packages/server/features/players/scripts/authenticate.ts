@@ -1,13 +1,16 @@
 import type { Runtime } from '@kernel/runtime';
 import { createScript } from '@kernel/script';
+import type { Db } from '@repo/db';
+import { banRecords, sessions, users } from '@repo/db/schema';
 import { attempt } from '@repo/shared';
 import { type DiscordOAuth2Token, type DiscordUser } from '@repo/shared/discord';
+import { and, eq } from 'drizzle-orm';
 
 const playerDiscordTokens = new Map<PlayerMp, DiscordOAuth2Token>();
 
 export default createScript({
-    name: 'authenticate',
-    fn: ({ messenger, fetch, logger, env }) => {
+    name: 'players.authenticate',
+    fn: ({ messenger, fetch, db, env }) => {
         mp.events.add('playerJoin', (player) => {
             messenger.publish(player, 'authentication.mount');
         });
@@ -37,7 +40,7 @@ export default createScript({
             }
 
             // Check if user is banned
-            const isBanned = await checkIfBanned(discordUserAttempt.data.id);
+            const isBanned = await checkIsBanned(db)(discordUserAttempt.data.id);
             if (isBanned) {
                 player.kick('You were banned');
                 return;
@@ -59,9 +62,6 @@ export default createScript({
             playerDiscordTokens.delete(player);
         });
 
-        // Handle OAuth token exchange from client
-        messenger.on('authentication.token.exchange', async (player, code: string) => {});
-
         // Handle login request from client
         messenger.on('authentication.login', async (player) => {
             const token = playerDiscordTokens.get(player);
@@ -78,21 +78,20 @@ export default createScript({
             }
 
             // Check if user is registered, register if not
-            const isRegistered = await isUserRegistered(profileAttempt.data.id);
-            if (!isRegistered) {
-                await registerUser(profileAttempt.data, player.name);
+            if (!(await checkIsUserRegistered(db)(profileAttempt.data.id))) {
+                await registerUser(db)(profileAttempt.data);
             }
 
             // Login user and get user ID
-            const userId = await loginUser(profileAttempt.data.id, player.ip);
-            if (userId === 0) {
-                player.kick('There was a mistake while logging in!');
+            const loginAttempt = await loginUser(db)(profileAttempt.data.id, player.ip);
+            if (!loginAttempt.ok) {
+                player.kick('Failed to login');
                 return;
             }
 
             // Set player data
-            player.protonId = userId;
-            player.role = await getUserRole(userId);
+            player.protonId = loginAttempt.data.id;
+            player.role = loginAttempt.data.role;
 
             // Notify client of successful login
             messenger.publish(player, 'authentication.login');
@@ -140,7 +139,7 @@ const exchangeCode =
         }
 
         if (!exchangeAttempt.data.ok) {
-            console.log(await exchangeAttempt.data.json())
+            console.log(await exchangeAttempt.data.json());
             return attempt.fail(`Discord API error: ${exchangeAttempt.data.status}`);
         }
 
@@ -171,35 +170,54 @@ const getDiscordProfile = (fetch: Runtime['fetch']) => async (accessToken: strin
 
 // Check if user is banned
 // In a real implementation, this would check a database
-async function checkIfBanned(discordId: string): Promise<boolean> {
-    // TODO: Implement database check for banned users
-    return false;
-}
+const checkIsBanned = (db: Db) => async (discordId: string) => {
+    return (await db.$count(banRecords, and(eq(banRecords.kind, 'discord'), eq(banRecords.identifier, discordId)))) > 0;
+};
 
 // Check if user is registered
 // In a real implementation, this would check a database
-async function isUserRegistered(discordId: string): Promise<boolean> {
-    // TODO: Implement database check
-    return false;
-}
+const checkIsUserRegistered = (db: Db) => async (discordId: string) => {
+    return (await db.$count(users, eq(users.discordId, discordId))) > 0;
+};
 
 // Register a new user
 // In a real implementation, this would add the user to a database
-async function registerUser(profile: DiscordUser, socialClubName: string): Promise<void> {
-    // TODO: Implement user registration in database
-}
+const registerUser = (db: Db) => async (profile: DiscordUser) => {
+    return await db.insert(users).values({
+        discordId: profile.id,
+        username: profile.username,
+        role: 'user',
+    });
+};
 
 // Login a user and return their user ID
 // In a real implementation, this would update login timestamp and return user ID from database
-async function loginUser(discordId: string, ipAddress: string): Promise<number> {
-    // TODO: Implement proper login in database
-    // For now, return a mock ID based on the Discord ID
-    return parseInt(discordId.substring(0, 8), 16) || 0;
-}
+const loginUser = (db: Db) => async (discordId: string, ipv4: string) => {
+    const selectUsersAttempt = await attempt.promise(() =>
+        db.select({ id: users.id, role: users.role }).from(users).where(eq(users.discordId, discordId)),
+    )();
 
-// Get user role
-// In a real implementation, this would fetch role from database
-async function getUserRole(userId: number): Promise<string> {
-    // TODO: Implement database lookup for user role
-    return 'user';
-}
+    if (!selectUsersAttempt.ok) {
+        return attempt.fail('Failed to fetch user by Discord ID');
+    }
+
+    const user = selectUsersAttempt.data[0];
+    if (!user) {
+        return attempt.fail('User not found');
+    }
+
+    // Create new session
+    const sessionAttempt = await attempt.promise(() =>
+        db.insert(sessions).values({
+            userId: user.id,
+            ipv4: ipv4,
+            isActive: true,
+        }),
+    )();
+
+    if (!sessionAttempt.ok) {
+        return attempt.fail('Failed to create session');
+    }
+
+    return attempt.ok(user);
+};

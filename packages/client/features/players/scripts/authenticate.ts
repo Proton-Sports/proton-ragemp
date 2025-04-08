@@ -3,7 +3,7 @@ import { combineCleanup, createToggle, tryPromise } from '@repo/shared/utils';
 import { attempt } from '@repo/shared';
 
 export default createScript({
-    name: 'authenticate',
+    name: 'players.authenticate',
     fn: ({ game, ui, messenger, logger }) => {
         messenger.on('authentication.mount', () => {
             ui.router.mount('auth');
@@ -21,7 +21,7 @@ export default createScript({
 
             return combineCleanup(
                 messenger.on('authentication.requestOAuth2', async (clientId: string) => {
-                    let requestAttempt = await attempt.promise(() => mp.discord.requestOAuth2(clientId))(logger.error);
+                    const requestAttempt = await attempt.promise(() => mp.discord.requestOAuth2(clientId))(logger.error);
 
                     logger.info('requestAttempt', requestAttempt);
                     if (requestAttempt.ok) {

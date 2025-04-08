@@ -1,3 +1,4 @@
+import authenticate from './authenticate';
 import login from './login';
 
-export default [login];
+export default [authenticate, login];
