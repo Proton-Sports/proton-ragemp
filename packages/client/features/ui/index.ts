@@ -9,7 +9,7 @@ export type Ui = BrowserMp & {
 };
 
 export interface UiRouter {
-    mount(route: string, props?: Record<string, unknown>): void;
+    mount(route: string, props?: Record<PropertyKey, any>): void;
     unmount(route: string): void;
     onMount(route: string, handler: (...args: any[]) => void | (() => void)): void;
     onDestroy(route: string, handler: (...args: any[]) => void | (() => void)): void;

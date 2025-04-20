@@ -2,6 +2,7 @@ import { createLock, createUniqueLock } from '@repo/shared/lock';
 
 export interface Game {
     readonly cursor: Cursor;
+    readonly keys: Keys;
 
     freezeControls(toggle: boolean): void;
 }
@@ -10,27 +11,12 @@ export interface Cursor {
     show(toggle: boolean): void;
 }
 
-export const createGame = (): Game => {
-    const freezeLock = createUniqueLock();
+export interface Keys {
+    bind(keyCode: number, handler: () => void, keydown?: boolean): () => void;
+}
 
-    const freeze = () => {
-        mp.game.controls.disableAllControlActions(0);
-    };
-
-    return {
-        cursor: createCursor(),
-        freezeControls: (toggle) => {
-            if (toggle) {
-                freezeLock.acquire(() => {
-                    mp.events.add('render', freeze);
-                });
-            } else {
-                freezeLock.release(() => {
-                    mp.events.remove('render', freeze);
-                });
-            }
-        },
-    };
+export const createRageMpGame = () => {
+    return new RageMpGame();
 };
 
 const createCursor = (): Cursor => {
@@ -66,3 +52,47 @@ const createCursor = (): Cursor => {
         },
     };
 };
+
+class RageMpGame implements Game {
+    #cursor: Cursor;
+    #keys: Keys;
+    #freezeLock = createUniqueLock();
+
+    constructor() {
+        this.#cursor = createCursor();
+        this.#keys = new RageMpKeys();
+    }
+
+    get cursor() {
+        return this.#cursor;
+    }
+
+    get keys() {
+        return this.#keys;
+    }
+
+    freezeControls(toggle: boolean): void {
+        if (toggle) {
+            this.#freezeLock.acquire(() => {
+                mp.events.add('render', RageMpGame.#freeze);
+            });
+        } else {
+            this.#freezeLock.release(() => {
+                mp.events.remove('render', RageMpGame.#freeze);
+            });
+        }
+    }
+
+    static #freeze() {
+        mp.game.controls.disableAllControlActions(0);
+    }
+}
+
+class RageMpKeys implements Keys {
+    bind(keyCode: number, handler: () => void, keydown = false): () => void {
+        mp.keys.bind(keyCode, keydown, handler);
+        return () => {
+            mp.keys.unbind(keyCode, keydown, handler);
+        };
+    }
+}

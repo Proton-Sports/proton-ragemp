@@ -23,6 +23,7 @@ import {
     type FaceFeature,
     type FaceOverlay,
 } from './shared';
+import { relations } from 'drizzle-orm';
 
 // User-related tables
 export const users = pgTable('users', {
@@ -266,3 +267,10 @@ export const userRacePointRestorations = pgTable(
     },
     (table) => [primaryKey({ columns: [table.userId, table.lap, table.index] })],
 );
+
+export const closetsRelations = relations(closets, ({ one }) => ({
+    clothItem: one(clothes, {
+        fields: [closets.clothId],
+        references: [clothes.id],
+    }),
+}));
