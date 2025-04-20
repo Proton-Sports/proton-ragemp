@@ -9,9 +9,12 @@ import Face from './Face';
 import Overlay from './Overlay';
 import Hair from './Hair';
 import { Popover, Transition } from '@headlessui/react';
+import { useRuntime } from '$lib/contexts/runtime-context';
 
 export default function Index() {
   type Page = (typeof pages)[number]['id'];
+
+  const { messenger } = useRuntime();
   const [activePage, setActivePage] = useState<Page | null>(null);
   const [dnaData, setDNAData] = useState<DNAData>({
     gender: 'male',
@@ -97,7 +100,7 @@ export default function Index() {
 
   function handleDNAGenderChange(value: 'male' | 'female') {
     setDNAData((x) => ({ ...x, gender: value }));
-    alt.emit('characterClient:setGender', value === 'male' ? 1 : 0);
+    messenger.publish('character-creator.setGender', value === 'male' ? 1 : 0);
   }
 
   function handleFaceDrag(field: keyof FaceData, values: number[]) {
@@ -116,15 +119,15 @@ export default function Index() {
   }
 
   function handleMouseEnter() {
-    alt.emit('characterClient:mouseEntered', true);
+    messenger.publish('character-creator.mouseEntered', true);
   }
 
   function handleMouseLeave() {
-    alt.emit('characterClient:mouseEntered', false);
+    messenger.publish('character-creator.mouseEntered', false);
   }
 
   function emitSetAppearance() {
-    alt.emit('characterClient:setAppearance', JSON.stringify(appearaceDto(dnaData, faceData, overlayData, hairData)));
+    messenger.publish('character-creator.setAppearance', JSON.stringify(appearaceDto(dnaData, faceData, overlayData, hairData)));
   }
 
   return (
@@ -181,8 +184,8 @@ export default function Index() {
                           className="p-4 space-y-2"
                           onSubmit={(e) => {
                             e.preventDefault();
-                            alt.emit(
-                              'characterClient:submitAppearance',
+                            messenger.publish(
+                              'character-creator.submitAppearance',
                               JSON.stringify(appearaceDto(dnaData, faceData, overlayData, hairData))
                             );
                             close();

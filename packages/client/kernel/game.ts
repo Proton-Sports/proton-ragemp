@@ -50,7 +50,7 @@ const createCursor = (): Cursor => {
                     mp.gui.cursor.show(false, true);
                     if (enforceInterval === 0) {
                         mp.keys.bind(0x7a, false, enforce);
-                        enforceInterval = setInterval(enforce, 1000);
+                        enforceInterval = setInterval(enforce, 1000) as unknown as number;
                     }
                 });
             } else {

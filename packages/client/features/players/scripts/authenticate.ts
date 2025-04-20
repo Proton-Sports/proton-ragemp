@@ -3,7 +3,7 @@ import { combineCleanup, createToggle, tryPromise } from '@repo/shared/utils';
 import { attempt } from '@repo/shared';
 
 export default createScript({
-    name: 'players.authenticate',
+    name: 'authenticate-player',
     fn: ({ game, ui, messenger, logger }) => {
         messenger.on('authentication.mount', () => {
             ui.router.mount('auth');

@@ -1,5 +1,6 @@
 import authenticate from './authenticate';
-import commands from './commands';
-import login from './login';
+import characterCreator from './character-creator';
+import freezePosition from './freeze-position';
+import setInvincible from './set-invincible';
 
-export default [authenticate, commands, login];
+export default [freezePosition, setInvincible, authenticate, characterCreator];

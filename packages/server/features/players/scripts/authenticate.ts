@@ -6,10 +6,16 @@ import { attempt } from '@repo/shared';
 import { type DiscordOAuth2Token, type DiscordUser } from '@repo/shared/discord';
 import { and, eq } from 'drizzle-orm';
 
+declare global {
+    interface IServerEvents {
+        'authentication.ok': (player: PlayerMp) => void;
+    }
+}
+
 const playerDiscordTokens = new Map<PlayerMp, DiscordOAuth2Token>();
 
 export default createScript({
-    name: 'players.authenticate',
+    name: 'authenticate-player',
     fn: ({ messenger, fetch, db, env }) => {
         mp.events.add('playerJoin', (player) => {
             messenger.publish(player, 'authentication.mount');
@@ -97,7 +103,7 @@ export default createScript({
             messenger.publish(player, 'authentication.login');
 
             // Emit legacy event
-            mp.events.call('auth.firstSignIn', player);
+            mp.events.call('authentication.ok', player);
         });
 
         // Handle logout
@@ -139,7 +145,6 @@ const exchangeCode =
         }
 
         if (!exchangeAttempt.data.ok) {
-            console.log(await exchangeAttempt.data.json());
             return attempt.fail(`Discord API error: ${exchangeAttempt.data.status}`);
         }
 

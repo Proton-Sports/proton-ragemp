@@ -9,9 +9,10 @@
     },
     "devDependencies": {
         "@ragempcommunity/types-client": "^2.1.9",
-        "@types/bun": "latest",
-        "tsup": "^8.4.0",
         "@repo/shared": "workspace:*",
+        "@types/bun": "latest",
+        "@types/node": "^14",
+        "tsup": "^8.4.0",
         "typescript": "^5.8.2"
     }
 }
