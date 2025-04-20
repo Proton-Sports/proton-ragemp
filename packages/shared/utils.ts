@@ -81,3 +81,11 @@ export const when = async (condition: () => boolean, timeout: number = 5000) => 
         throw e;
     });
 };
+
+export const getDistanceSquared = (a: { x: number; y: number; z: number }, b: { x: number; y: number; z: number }) => {
+    return (a.x - b.x) ** 2 + (a.y - b.y) ** 2 + (a.z - b.z) ** 2;
+};
+
+export const getDistance = (a: { x: number; y: number; z: number }, b: { x: number; y: number; z: number }) => {
+    return Math.sqrt(getDistanceSquared(a, b));
+};
