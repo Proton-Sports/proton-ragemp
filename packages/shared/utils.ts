@@ -1,3 +1,6 @@
+import { attempt } from './attempt';
+import { TimeoutError } from './models/error';
+
 export type Try<TData, TError> =
     | {
           ok: true;
@@ -55,3 +58,26 @@ export const tryPromise = <TData>(fn: () => Promise<TData>) => {
 export const hashUiEventName = (name: string) => `ui.${name}`;
 
 export const hashServerEventName = (name: string) => `sv.${name}`;
+
+export const when = async (condition: () => boolean, timeout: number = 5000) => {
+    return await attempt.promise(
+        () =>
+            new Promise<never>((resolve, reject) => {
+                const startTime = Date.now();
+                const interval = setInterval(() => {
+                    if (condition()) {
+                        clearInterval(interval);
+                        resolve(undefined as never);
+                    } else if (Date.now() - startTime > timeout) {
+                        clearInterval(interval);
+                        reject(new TimeoutError());
+                    }
+                }, 30);
+            }),
+    )((e) => {
+        if (e instanceof TimeoutError) {
+            return e;
+        }
+        throw e;
+    });
+};

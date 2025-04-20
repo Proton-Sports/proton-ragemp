@@ -1,6 +1,8 @@
-import type { Logger } from 'pino';
-import type { Messenger } from './messenger';
 import type { Db } from '@repo/db';
+import type { Logger } from 'pino';
+import type { IplService } from '../features/ipls/common/ipl-service';
+import type { Messenger } from './messenger';
+import type { IplOptions } from '../features/ipls/common/ipl-options';
 
 export interface Runtime {
     readonly logger: Logger;
@@ -11,4 +13,6 @@ export interface Runtime {
         readonly DISCORD_OAUTH2_CLIENT_SECRET: string;
     };
     readonly db: Db;
+    readonly ipl: IplService;
+    readonly iplOptions: IplOptions;
 }
