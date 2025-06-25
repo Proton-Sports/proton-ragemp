@@ -1,22 +1,18 @@
 {
     "name": "my-turborepo",
+    "devDependencies": {
+        "turbo": "^2.5.4"
+    },
     "description": "A barebones Turborepo example for working with Task Graphs.",
+    "packageManager": "bun@1.2.3",
     "private": true,
     "scripts": {
         "build": "turbo run build",
         "dev": "turbo run dev",
         "start": "turbo run start"
     },
-    "devDependencies": {
-        "@types/bun": "latest",
-        "turbo": "^2.4.4"
-    },
-    "packageManager": "bun@1.2.3",
     "workspaces": [
         "apps/*",
         "packages/*"
-    ],
-    "peerDependencies": {
-        "typescript": "^5.8.2"
-    }
+    ]
 }
