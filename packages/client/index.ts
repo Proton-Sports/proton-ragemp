@@ -7,6 +7,7 @@ import { createRageMpNoClipService } from '@features/noclip/common/noclip-servic
 import noclip from '@features/noclip/scripts';
 import players from '@features/players/scripts';
 import { createUi } from '@features/ui';
+import ui from '@features/ui/scripts';
 import { createRageMpGame } from '@kernel/game';
 import { createMpLogger } from '@kernel/logger';
 import { createRemoteMessenger } from '@kernel/messenger';
@@ -23,7 +24,7 @@ const runtime: Runtime = {
     noclip: createRageMpNoClipService(),
 };
 
-for (const script of [...chat, ...players, ...ipls, ...hud, ...noclip]) {
+for (const script of [...chat, ...players, ...ipls, ...hud, ...noclip, ...ui]) {
     script.fn(runtime);
     runtime.logger.info(`Loaded script: ${script.name}.`);
 }
