@@ -7,6 +7,7 @@ import pino from 'pino';
 import type { IplOptions } from './features/ipls/common/ipl-options';
 import { createIplService } from './features/ipls/common/ipl-service';
 import ipls from './features/ipls/scripts';
+import { createRageMpClosetService } from './features/players/common/closet-service';
 import players from './features/players/scripts';
 
 dotenv.config();
@@ -39,6 +40,7 @@ const runtime = {
     db: createDb(env.DB_CONNECTION_STRING),
     ipl: createIplService(messenger),
     iplOptions: config.get<IplOptions>('Ipl'),
+    closetService: createRageMpClosetService(),
 };
 
 for (const script of [...players, ...ipls]) {
