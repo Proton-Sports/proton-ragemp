@@ -33,7 +33,7 @@ export default function Overlay({ data, onDrag }: Props) {
             min={0}
             max={overlays.blemish.max}
             step={1}
-            onDrag={(values) => onDrag('blemish', values)}
+            onChange={(values) => onDrag('blemish', values)}
           />
         </div>
         <div className="space-y-2">
@@ -44,7 +44,7 @@ export default function Overlay({ data, onDrag }: Props) {
             min={0}
             max={1}
             step={0.05}
-            onDrag={(values) => onDrag('blemishOpacity', roundedFloat(values))}
+            onChange={(values) => onDrag('blemishOpacity', roundedFloat(values))}
             showProgress
           />
         </div>
@@ -58,7 +58,7 @@ export default function Overlay({ data, onDrag }: Props) {
             min={0}
             max={overlays.ageing.max}
             step={1}
-            onDrag={(values) => onDrag('ageing', values)}
+            onChange={(values) => onDrag('ageing', values)}
           />
         </div>
         <div className="space-y-2">
@@ -69,7 +69,7 @@ export default function Overlay({ data, onDrag }: Props) {
             min={0}
             max={1}
             step={0.05}
-            onDrag={(values) => onDrag('ageingOpacity', roundedFloat(values))}
+            onChange={(values) => onDrag('ageingOpacity', roundedFloat(values))}
             showProgress
           />
         </div>
@@ -83,7 +83,7 @@ export default function Overlay({ data, onDrag }: Props) {
             min={0}
             max={overlays.complexion.max}
             step={1}
-            onDrag={(values) => onDrag('complexion', values)}
+            onChange={(values) => onDrag('complexion', values)}
           />
         </div>
         <div className="space-y-2">
@@ -94,7 +94,7 @@ export default function Overlay({ data, onDrag }: Props) {
             min={0}
             max={1}
             step={0.05}
-            onDrag={(values) => onDrag('complexionOpacity', roundedFloat(values))}
+            onChange={(values) => onDrag('complexionOpacity', roundedFloat(values))}
             showProgress
           />
         </div>
@@ -108,7 +108,7 @@ export default function Overlay({ data, onDrag }: Props) {
             min={0}
             max={overlays.sunDamage.max}
             step={1}
-            onDrag={(values) => onDrag('sunDamage', values)}
+            onChange={(values) => onDrag('sunDamage', values)}
           />
         </div>
         <div className="space-y-2">
@@ -119,7 +119,7 @@ export default function Overlay({ data, onDrag }: Props) {
             min={0}
             max={1}
             step={0.05}
-            onDrag={(values) => onDrag('sunDamageOpacity', roundedFloat(values))}
+            onChange={(values) => onDrag('sunDamageOpacity', roundedFloat(values))}
             showProgress
           />
         </div>
@@ -133,7 +133,7 @@ export default function Overlay({ data, onDrag }: Props) {
             min={0}
             max={overlays.freckles.max}
             step={1}
-            onDrag={(values) => onDrag('freckles', values)}
+            onChange={(values) => onDrag('freckles', values)}
           />
         </div>
         <div className="space-y-2">
@@ -144,7 +144,7 @@ export default function Overlay({ data, onDrag }: Props) {
             min={0}
             max={1}
             step={0.05}
-            onDrag={(values) => onDrag('frecklesOpacity', roundedFloat(values))}
+            onChange={(values) => onDrag('frecklesOpacity', roundedFloat(values))}
             showProgress
           />
         </div>
@@ -158,7 +158,7 @@ export default function Overlay({ data, onDrag }: Props) {
             min={0}
             max={overlays.bodyBlemish.max}
             step={1}
-            onDrag={(values) => onDrag('bodyBlemish', values)}
+            onChange={(values) => onDrag('bodyBlemish', values)}
           />
         </div>
         <div className="space-y-2">
@@ -169,7 +169,7 @@ export default function Overlay({ data, onDrag }: Props) {
             min={0}
             max={1}
             step={0.05}
-            onDrag={(values) => onDrag('bodyBlemishOpacity', roundedFloat(values))}
+            onChange={(values) => onDrag('bodyBlemishOpacity', roundedFloat(values))}
             showProgress
           />
         </div>
@@ -183,7 +183,7 @@ export default function Overlay({ data, onDrag }: Props) {
             min={0}
             max={overlays.blush.max}
             step={1}
-            onDrag={(values) => onDrag('blush', values)}
+            onChange={(values) => onDrag('blush', values)}
           />
         </div>
         <div className="space-y-2">
@@ -194,7 +194,7 @@ export default function Overlay({ data, onDrag }: Props) {
             min={0}
             max={1}
             step={0.05}
-            onDrag={(values) => onDrag('blushOpacity', roundedFloat(values))}
+            onChange={(values) => onDrag('blushOpacity', roundedFloat(values))}
             showProgress
           />
         </div>
@@ -208,7 +208,7 @@ export default function Overlay({ data, onDrag }: Props) {
             min={0}
             max={overlays.lipstick.max}
             step={1}
-            onDrag={(values) => onDrag('lipstick', values)}
+            onChange={(values) => onDrag('lipstick', values)}
           />
         </div>
         <div className="space-y-2">
@@ -219,7 +219,7 @@ export default function Overlay({ data, onDrag }: Props) {
             min={0}
             max={1}
             step={0.05}
-            onDrag={(values) => onDrag('lipstickOpacity', roundedFloat(values))}
+            onChange={(values) => onDrag('lipstickOpacity', roundedFloat(values))}
             showProgress
           />
         </div>

@@ -150,7 +150,7 @@ export default function Index({ primaryColor: initialPrimaryColor, secondaryColo
                 <Virtualizer scrollRef={scrollRef}>
                   {categories.map((category) => {
                     const Content = category.component as unknown as React.LazyExoticComponent<
-                      (props: Record<string, unknown>) => JSX.Element
+                      (props: Record<string, unknown>) => React.JSX.Element
                     >;
                     return (
                       <Accordion.Item

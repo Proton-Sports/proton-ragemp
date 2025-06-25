@@ -6,7 +6,7 @@ export default function RpmModule() {
     bottom: '22%',
     right: '-14.5%',
   };
-  const [content, setContent] = useState<JSX.Element[]>([]);
+  const [content, setContent] = useState<React.JSX.Element[]>([]);
   const [rpm, setRpm] = useState<number>(0);
 
   useEffect(() => {

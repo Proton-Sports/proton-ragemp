@@ -32,7 +32,7 @@ export default function Face({ data, onDrag }: Props) {
             min={0}
             max={1}
             step={0.05}
-            onDrag={(values) => onDrag('noseWidth', roundedFloat(values))}
+            onChange={(values) => onDrag('noseWidth', roundedFloat(values))}
           />
         </div>
         <div className="space-y-2">
@@ -43,7 +43,7 @@ export default function Face({ data, onDrag }: Props) {
             min={0}
             max={1}
             step={0.05}
-            onDrag={(values) => onDrag('noseHeight', roundedFloat(values))}
+            onChange={(values) => onDrag('noseHeight', roundedFloat(values))}
           />
         </div>
         <div className="space-y-2">
@@ -54,7 +54,7 @@ export default function Face({ data, onDrag }: Props) {
             min={0}
             max={1}
             step={0.05}
-            onDrag={(values) => onDrag('noseLength', roundedFloat(values))}
+            onChange={(values) => onDrag('noseLength', roundedFloat(values))}
           />
         </div>
         <div className="space-y-2">
@@ -65,7 +65,7 @@ export default function Face({ data, onDrag }: Props) {
             min={0}
             max={1}
             step={0.05}
-            onDrag={(values) => onDrag('noseTip', roundedFloat(values))}
+            onChange={(values) => onDrag('noseTip', roundedFloat(values))}
           />
         </div>
         <div className="space-y-2">
@@ -76,7 +76,7 @@ export default function Face({ data, onDrag }: Props) {
             min={0}
             max={1}
             step={0.05}
-            onDrag={(values) => onDrag('noseBridgeShaft', roundedFloat(values))}
+            onChange={(values) => onDrag('noseBridgeShaft', roundedFloat(values))}
           />
         </div>
       </FieldSet>
@@ -89,7 +89,7 @@ export default function Face({ data, onDrag }: Props) {
             min={0}
             max={1}
             step={0.05}
-            onDrag={(values) => onDrag('browWidth', roundedFloat(values))}
+            onChange={(values) => onDrag('browWidth', roundedFloat(values))}
           />
         </div>
         <div className="space-y-2">
@@ -100,7 +100,7 @@ export default function Face({ data, onDrag }: Props) {
             min={0}
             max={1}
             step={0.05}
-            onDrag={(values) => onDrag('browHeight', roundedFloat(values))}
+            onChange={(values) => onDrag('browHeight', roundedFloat(values))}
           />
         </div>
       </FieldSet>
@@ -113,7 +113,7 @@ export default function Face({ data, onDrag }: Props) {
             min={0}
             max={1}
             step={0.05}
-            onDrag={(values) => onDrag('cheekBoneWidth', roundedFloat(values))}
+            onChange={(values) => onDrag('cheekBoneWidth', roundedFloat(values))}
           />
         </div>
         <div className="space-y-2">
@@ -124,7 +124,7 @@ export default function Face({ data, onDrag }: Props) {
             min={0}
             max={1}
             step={0.05}
-            onDrag={(values) => onDrag('cheekBoneHeight', roundedFloat(values))}
+            onChange={(values) => onDrag('cheekBoneHeight', roundedFloat(values))}
           />
         </div>
       </FieldSet>
@@ -137,7 +137,7 @@ export default function Face({ data, onDrag }: Props) {
             min={0}
             max={1}
             step={0.05}
-            onDrag={(values) => onDrag('cheekWidth', roundedFloat(values))}
+            onChange={(values) => onDrag('cheekWidth', roundedFloat(values))}
           />
         </div>
       </FieldSet>
@@ -150,7 +150,7 @@ export default function Face({ data, onDrag }: Props) {
             min={0}
             max={1}
             step={0.05}
-            onDrag={(values) => onDrag('eyeLids', roundedFloat(values))}
+            onChange={(values) => onDrag('eyeLids', roundedFloat(values))}
           />
         </div>
       </FieldSet>
@@ -163,7 +163,7 @@ export default function Face({ data, onDrag }: Props) {
             min={0}
             max={1}
             step={0.05}
-            onDrag={(values) => onDrag('lips', roundedFloat(values))}
+            onChange={(values) => onDrag('lips', roundedFloat(values))}
           />
         </div>
       </FieldSet>
@@ -176,7 +176,7 @@ export default function Face({ data, onDrag }: Props) {
             min={0}
             max={1}
             step={0.05}
-            onDrag={(values) => onDrag('jawWidth', roundedFloat(values))}
+            onChange={(values) => onDrag('jawWidth', roundedFloat(values))}
           />
         </div>
         <div className="space-y-2">
@@ -187,7 +187,7 @@ export default function Face({ data, onDrag }: Props) {
             min={0}
             max={1}
             step={0.05}
-            onDrag={(values) => onDrag('jawHeight', roundedFloat(values))}
+            onChange={(values) => onDrag('jawHeight', roundedFloat(values))}
           />
         </div>
       </FieldSet>
@@ -200,7 +200,7 @@ export default function Face({ data, onDrag }: Props) {
             min={0}
             max={1}
             step={0.05}
-            onDrag={(values) => onDrag('chinLength', roundedFloat(values))}
+            onChange={(values) => onDrag('chinLength', roundedFloat(values))}
           />
         </div>
         <div className="space-y-2">
@@ -211,7 +211,7 @@ export default function Face({ data, onDrag }: Props) {
             min={0}
             max={1}
             step={0.05}
-            onDrag={(values) => onDrag('chinPosition', roundedFloat(values))}
+            onChange={(values) => onDrag('chinPosition', roundedFloat(values))}
           />
         </div>
         <div className="space-y-2">
@@ -222,7 +222,7 @@ export default function Face({ data, onDrag }: Props) {
             min={0}
             max={1}
             step={0.05}
-            onDrag={(values) => onDrag('chinWidth', roundedFloat(values))}
+            onChange={(values) => onDrag('chinWidth', roundedFloat(values))}
           />
         </div>
         <div className="space-y-2">
@@ -233,7 +233,7 @@ export default function Face({ data, onDrag }: Props) {
             min={0}
             max={1}
             step={0.05}
-            onDrag={(values) => onDrag('chinShape', roundedFloat(values))}
+            onChange={(values) => onDrag('chinShape', roundedFloat(values))}
           />
         </div>
       </FieldSet>
@@ -246,7 +246,7 @@ export default function Face({ data, onDrag }: Props) {
             min={0}
             max={1}
             step={0.05}
-            onDrag={(values) => onDrag('neckWidth', roundedFloat(values))}
+            onChange={(values) => onDrag('neckWidth', roundedFloat(values))}
           />
         </div>
       </FieldSet>

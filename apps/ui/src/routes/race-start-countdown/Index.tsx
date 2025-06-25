@@ -9,7 +9,7 @@ type Status = 'running' | null;
 export default function Index() {
   const [status, setStatus] = useState<'running' | null>(null);
   const [step, setStep] = useState(-1);
-  const interval = useRef<number>();
+  const interval = useRef<number | undefined>(undefined);
   const audio = useRef(new Audio());
 
   const count = useCallback(() => {

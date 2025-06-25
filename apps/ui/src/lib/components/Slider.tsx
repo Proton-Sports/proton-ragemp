@@ -1,6 +1,6 @@
-import { useRanger, Ranger } from '@tanstack/react-ranger';
+import { Slider as ArkSlider } from '@ark-ui/react';
 import clsx from 'clsx';
-import { Fragment, useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 interface Props {
   id?: string;
@@ -10,7 +10,6 @@ interface Props {
   max: number;
   step: number;
   onChange?: (values: number[]) => void;
-  onDrag?: (values: number[]) => void;
   showProgress?: boolean;
 }
 
@@ -23,68 +22,43 @@ export default function Slider({
   step,
   showProgress,
   onChange,
-  onDrag,
 }: Props) {
-  const rangerRef = useRef<HTMLDivElement>(null);
-  const [values, setValues] = useState(__values ?? defaultValues ?? []);
+  const isControlled = onChange != null;
+  const [values, setValues] = useState(__values ?? defaultValues ?? [min]);
 
   useEffect(() => {
-    if (__values) setValues(__values);
-  }, [__values, setValues]);
+    if (isControlled && __values) setValues(__values);
+  }, [__values, isControlled, setValues]);
 
-  const rangerInstance = useRanger<HTMLDivElement>({
-    getRangerElement: () => rangerRef.current,
-    values: values,
-    min,
-    max,
-    stepSize: step,
-    onChange: onDrag
-      ? undefined
-      : (instance: Ranger<HTMLDivElement>) => {
-          if (__values && onChange) onChange([...instance.sortedValues]);
-          else setValues([...instance.sortedValues]);
-        },
-    onDrag: (instance: Ranger<HTMLDivElement>) => {
-      if (__values && onDrag) onDrag([...instance.sortedValues]);
-      else setValues([...instance.sortedValues]);
-    },
-  });
+  const handleChange = (details: { value: number[] }) => {
+    if (onChange) onChange(details.value);
+    else setValues(details.value);
+  };
 
   return (
-    <div ref={rangerRef} className="relative h-2 rounded-full select-none bg-bg-3">
-      {rangerInstance.handles().map(({ value, onKeyDownHandler, onMouseDownHandler, onTouchStart, isActive }, i) => (
-        <Fragment key={i}>
-          {showProgress && (
-            <div
-              className={clsx(
-                'absolute inset-0 rounded-full transition ease-in-out',
-                isActive ? 'bg-primary ring ring-primary/10' : 'bg-fg'
-              )}
-              style={{ width: `${rangerInstance.getPercentageForValue(value)}%` }}
-            />
-          )}
-          <button
-            id={id}
-            onKeyDown={onKeyDownHandler}
-            onMouseDown={onMouseDownHandler}
-            onTouchStart={onTouchStart}
-            role="slider"
-            aria-valuemin={rangerInstance.options.min}
-            aria-valuemax={rangerInstance.options.max}
-            aria-valuenow={value}
+    <ArkSlider.Root
+      id={id}
+      min={min}
+      max={max}
+      step={step}
+      value={__values}
+      onValueChange={handleChange}
+    >
+      <ArkSlider.Control className="relative flex items-center justify-center">
+        <ArkSlider.Track className="bg-bg-3 h-2 w-full rounded-full">
+          {showProgress && <ArkSlider.Range className="bg-primary" />}
+        </ArkSlider.Track>
+        {((isControlled ? __values : values) ?? []).map((_value, i) => (
+          <ArkSlider.Thumb
+            key={i}
+            index={i}
             className={clsx(
-              'absolute transition ease-in-out -translate-x-1/2 -translate-y-1/2 border rounded-full top-1/2 size-4',
-              isActive
-                ? 'bg-primary border-transparent ring ring-primary/40'
-                : 'bg-fg hover:bg-primary-hover border-bg-border ring-0'
+              'border rounded-full size-5',
+              'bg-fg hover:bg-primary-hover border-bg-border ring-0'
             )}
-            style={{
-              left: `${rangerInstance.getPercentageForValue(value)}%`,
-              zIndex: isActive ? '1' : '0',
-            }}
           />
-        </Fragment>
-      ))}
-    </div>
+        ))}
+      </ArkSlider.Control>
+    </ArkSlider.Root>
   );
 }

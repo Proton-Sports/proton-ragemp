@@ -49,7 +49,7 @@ export default function DNA({ data, onDrag, onGenderChange }: Props) {
             min={0}
             max={facesMax}
             step={1}
-            onDrag={(values) => onDrag('mother', values)}
+            onChange={(values) => onDrag('mother', values)}
           />
           <p className="text-sm font-bold text-center text-fg-3">{faceNames[data.mother[0]]}</p>
         </div>
@@ -61,7 +61,7 @@ export default function DNA({ data, onDrag, onGenderChange }: Props) {
             min={0}
             max={facesMax}
             step={1}
-            onDrag={(values) => onDrag('father', values)}
+            onChange={(values) => onDrag('father', values)}
           />
           <p className="text-sm font-bold text-center text-fg-3">{faceNames[data.father[0]]}</p>
         </div>
@@ -75,7 +75,7 @@ export default function DNA({ data, onDrag, onGenderChange }: Props) {
             min={0}
             max={facesMax}
             step={1}
-            onDrag={(values) => onDrag('motherSkin', values)}
+            onChange={(values) => onDrag('motherSkin', values)}
           />
           <p className="text-sm font-bold text-center text-fg-3">{faceNames[data.motherSkin[0]]}</p>
         </div>
@@ -87,7 +87,7 @@ export default function DNA({ data, onDrag, onGenderChange }: Props) {
             min={0}
             max={facesMax}
             step={1}
-            onDrag={(values) => onDrag('fatherSkin', values)}
+            onChange={(values) => onDrag('fatherSkin', values)}
           />
           <p className="text-sm font-bold text-center text-fg-3">{faceNames[data.fatherSkin[0]]}</p>
         </div>
@@ -101,7 +101,7 @@ export default function DNA({ data, onDrag, onGenderChange }: Props) {
             min={0}
             max={1}
             step={0.05}
-            onDrag={(values) =>
+            onChange={(values) =>
               onDrag(
                 'faceMix',
                 values.map((x) => Math.round(x * 10) / 10)
@@ -117,7 +117,7 @@ export default function DNA({ data, onDrag, onGenderChange }: Props) {
             min={0}
             max={1}
             step={0.05}
-            onDrag={(values) =>
+            onChange={(values) =>
               onDrag(
                 'skinMix',
                 values.map((x) => Math.round(x * 10) / 10)
@@ -135,7 +135,7 @@ export default function DNA({ data, onDrag, onGenderChange }: Props) {
             min={0}
             max={30}
             step={1}
-            onDrag={(values) => onDrag('eyesColor', values)}
+            onChange={(values) => onDrag('eyesColor', values)}
           />
         </div>
       </FieldSet>

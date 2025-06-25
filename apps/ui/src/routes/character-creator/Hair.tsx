@@ -40,7 +40,7 @@ export default function Hair({ gender, data, onDrag }: Props) {
             min={0}
             max={hairsMax}
             step={1}
-            onDrag={(values) => onDrag('hair', values)}
+            onChange={(values) => onDrag('hair', values)}
           />
           <p className="text-sm font-bold text-center text-fg-3">{hairs[data.hair[0]]}</p>
         </div>
@@ -52,7 +52,7 @@ export default function Hair({ gender, data, onDrag }: Props) {
             min={0}
             max={hairColorsMax}
             step={1}
-            onDrag={(values) => onDrag('hairColor1', values)}
+            onChange={(values) => onDrag('hairColor1', values)}
           />
           <p className="text-sm font-bold text-center text-fg-3">{hairColors[data.hairColor1[0]]}</p>
         </div>
@@ -64,7 +64,7 @@ export default function Hair({ gender, data, onDrag }: Props) {
             min={0}
             max={hairColorsMax}
             step={1}
-            onDrag={(values) => onDrag('hairColor2', values)}
+            onChange={(values) => onDrag('hairColor2', values)}
           />
           <p className="text-sm font-bold text-center text-fg-3">{hairColors[data.hairColor2[0]]}</p>
         </div>
@@ -78,7 +78,7 @@ export default function Hair({ gender, data, onDrag }: Props) {
             min={0}
             max={facialHairs.length - 1}
             step={1}
-            onDrag={(values) => onDrag('facialHair', values)}
+            onChange={(values) => onDrag('facialHair', values)}
           />
           <p className="text-sm font-bold text-center text-fg-3">{facialHairs[data.facialHair[0]]}</p>
         </div>
@@ -90,7 +90,7 @@ export default function Hair({ gender, data, onDrag }: Props) {
             min={0}
             max={hairColorsMax}
             step={1}
-            onDrag={(values) => onDrag('facialHairColor1', values)}
+            onChange={(values) => onDrag('facialHairColor1', values)}
           />
           <p className="text-sm font-bold text-center text-fg-3">{hairColors[data.facialHairColor1[0]]}</p>
         </div>
@@ -102,7 +102,7 @@ export default function Hair({ gender, data, onDrag }: Props) {
             min={0}
             max={hairColorsMax}
             step={1}
-            onDrag={(values) => onDrag('facialHairColor2', values)}
+            onChange={(values) => onDrag('facialHairColor2', values)}
           />
           <p className="text-sm font-bold text-center text-fg-3">{hairColors[data.facialHairColor2[0]]}</p>
         </div>
@@ -114,7 +114,7 @@ export default function Hair({ gender, data, onDrag }: Props) {
             min={0}
             max={1}
             step={0.05}
-            onDrag={(values) => onDrag('facialHairOpacity', roundedFloat(values))}
+            onChange={(values) => onDrag('facialHairOpacity', roundedFloat(values))}
             showProgress
           />
         </div>
@@ -128,7 +128,7 @@ export default function Hair({ gender, data, onDrag }: Props) {
             min={0}
             max={eyeBrowsMax}
             step={1}
-            onDrag={(values) => onDrag('eyeBrows', values)}
+            onChange={(values) => onDrag('eyeBrows', values)}
           />
           <p className="text-sm font-bold text-center text-fg-3">{eyebrowNames[data.eyeBrows[0]]}</p>
         </div>
@@ -140,7 +140,7 @@ export default function Hair({ gender, data, onDrag }: Props) {
             min={0}
             max={hairColorsMax}
             step={1}
-            onDrag={(values) => onDrag('eyeBrowsColor', values)}
+            onChange={(values) => onDrag('eyeBrowsColor', values)}
           />
           <p className="text-sm font-bold text-center text-fg-3">{hairColors[data.eyeBrowsColor[0]]}</p>
         </div>

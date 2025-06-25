@@ -1,15 +1,15 @@
+import { useRuntime } from '$lib/contexts/runtime-context';
+import { Popover, PopoverButton, PopoverPanel, Transition } from '@headlessui/react';
 import clsx from 'clsx';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useState } from 'react';
 import Arrow from '../../lib/assets/images/arrow_button.png';
 import Button from '../../lib/components/Button';
 import DNA from './DNA';
-import { type FaceData, type DNAData, type OverlayData, type HairData, dto as appearaceDto } from './utils';
 import Face from './Face';
-import Overlay from './Overlay';
 import Hair from './Hair';
-import { Popover, Transition } from '@headlessui/react';
-import { useRuntime } from '$lib/contexts/runtime-context';
+import Overlay from './Overlay';
+import { type DNAData, type FaceData, type HairData, type OverlayData, dto as appearaceDto } from './utils';
 
 export default function Index() {
   type Page = (typeof pages)[number]['id'];
@@ -90,6 +90,7 @@ export default function Index() {
   ] as const;
 
   function handleChangePage(page: Page) {
+    messenger.publish('logger.info', 'handleChangePage', page);
     setActivePage((activePage) => (activePage === page ? null : page));
   }
 
@@ -127,7 +128,10 @@ export default function Index() {
   }
 
   function emitSetAppearance() {
-    messenger.publish('character-creator.setAppearance', JSON.stringify(appearaceDto(dnaData, faceData, overlayData, hairData)));
+    messenger.publish(
+      'character-creator.setAppearance',
+      JSON.stringify(appearaceDto(dnaData, faceData, overlayData, hairData))
+    );
   }
 
   return (
@@ -164,11 +168,11 @@ export default function Index() {
             <Popover>
               {({ open }) => (
                 <>
-                  <Popover.Button as="div">
+                  <PopoverButton as="div">
                     <Button type="submit" variant="primary" className="w-full text-left uppercase fugaz">
                       Create
                     </Button>
-                  </Popover.Button>
+                  </PopoverButton>
                   <Transition
                     show={open}
                     enter="transition ease-in-out"
@@ -178,7 +182,7 @@ export default function Index() {
                     leaveFrom="transform opacity-100"
                     leaveTo="transform translate-y-1 opacity-0"
                   >
-                    <Popover.Panel className="absolute -translate-y-[140%] w-max c-btn bg-bg-1" static>
+                    <PopoverPanel className="absolute -translate-y-[140%] w-max c-btn bg-bg-1" static>
                       {({ close }) => (
                         <form
                           className="p-4 space-y-2"
@@ -202,7 +206,7 @@ export default function Index() {
                           </div>
                         </form>
                       )}
-                    </Popover.Panel>
+                    </PopoverPanel>
                   </Transition>
                 </>
               )}
