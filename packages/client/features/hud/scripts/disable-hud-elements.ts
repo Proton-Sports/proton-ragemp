@@ -3,9 +3,6 @@ import { createScript } from '@kernel/script';
 export default createScript({
     name: 'disable-hud-elements',
     fn: () => {
-        // Set infinite stamina
-        mp.game.player.setRunSprintMultiplierFor(1.49);
-
         // Add render event handler
         mp.events.add('render', () => {
             // Suppress weapon wheel
