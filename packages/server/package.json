@@ -8,6 +8,7 @@
         "dev": "bun build.ts --watch"
     },
     "devDependencies": {
+        "@duydang2311/attempt": "^0.0.8",
         "@ragempcommunity/types-server": "^2.1.9",
         "@repo/db": "workspace:*",
         "@repo/shared": "workspace:*",
