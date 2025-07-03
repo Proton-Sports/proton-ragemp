@@ -1,7 +1,7 @@
 import { RacePointData } from './race-point-data';
 import { StartPositionData } from './start-position-data';
 
-export interface IRaceCreator {
+export interface RaceCreator {
     readonly racePoints: Array<{ position: Vector3; radius: number }>;
     readonly startPoints: Array<{ position: Vector3; rotation: Vector3 }>;
     name: string;

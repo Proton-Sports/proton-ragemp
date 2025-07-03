@@ -3,7 +3,7 @@ import type { RacePointDto, RaceType } from '@repo/shared/race';
 import { RaceStatus } from '../common/race-status';
 import type { IRacePointResolver } from './race-point-resolver';
 
-export interface IRaceService {
+export interface RaceService {
     on(eventName: 'racePointHit', handler: (index: number) => void): () => void;
     on(eventName: 'started', handler: () => void): () => void;
     on(eventName: 'stopped', handler: () => void): () => void;

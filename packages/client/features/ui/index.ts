@@ -9,6 +9,7 @@ export type Ui = BrowserMp & {
 };
 
 export interface UiRouter {
+    isMounted(route: string): boolean;
     mount(route: string, props?: Record<PropertyKey, any>): void;
     unmount(route: string): void;
     onMount(route: string, handler: (...args: any[]) => void | (() => void)): void;
@@ -47,6 +48,7 @@ const createRouter = (browser: BrowserMp): UiRouter => {
     const onMountHandlers = new Map<string, (() => void)[]>();
     const onDestroyHandlers = new Map<string, (() => void)[]>();
     const transientOnDestroyHandlers = new Map<string, (() => void)[]>();
+    const mountedRoutes = new Set<string>();
 
     const addHandler = (map: Map<string, (() => void)[]>, name: string, handler: () => void) => {
         let handlers = map.get(name);
@@ -72,6 +74,7 @@ const createRouter = (browser: BrowserMp): UiRouter => {
 
     mp.console.logInfo(`mp.events.add ${hashUiEventName('ui.router.mount')}`);
     mp.events.add(hashUiEventName('ui.router.mount'), (route: string) => {
+        mountedRoutes.add(route);
         mp.console.logInfo('ui.router.mount ' + route);
         const handlers = onMountHandlers.get(route);
         if (handlers != null) {
@@ -85,6 +88,7 @@ const createRouter = (browser: BrowserMp): UiRouter => {
     });
 
     mp.events.add(hashUiEventName('ui.router.unmount'), (route: string) => {
+        mountedRoutes.delete(route);
         const transientHandlers = transientOnDestroyHandlers.get(route);
         for (const handler of [...(onDestroyHandlers.get(route) ?? []), ...(transientHandlers ?? [])]) {
             handler();
@@ -95,10 +99,15 @@ const createRouter = (browser: BrowserMp): UiRouter => {
     });
 
     return {
+        isMounted: (route: string) => {
+            return mountedRoutes.has(route);
+        },
         mount: (route: string) => {
+            mountedRoutes.add(route);
             browser.call(hashUiEventName('ui.router.mount'), route);
         },
         unmount: (route: string) => {
+            mountedRoutes.delete(route);
             browser.call(hashUiEventName('ui.router.unmount'), route);
         },
         onMount: (route, handler) => {

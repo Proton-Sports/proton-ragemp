@@ -3,10 +3,10 @@ import { getDistanceSquared } from '@repo/shared';
 import type { RacePointDto } from '@repo/shared/race';
 import { RaceType } from '@repo/shared/race';
 import type { IRacePointResolver } from './common/race-point-resolver';
-import type { IRaceService } from './common/race-service';
+import type { RaceService } from './common/race-service';
 import { RaceStatus } from './common/race-status';
 
-export class DefaultRaceService implements IRaceService {
+export class DefaultRaceService implements RaceService {
     private static readonly BLIP_SPRITE_OBJECTIVE = 146;
     private static readonly BLIP_SPRITE_ARROW = 14;
 
