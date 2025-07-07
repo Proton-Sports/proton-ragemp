@@ -1,4 +1,6 @@
+import { RageMpStreamedMetaStore } from '@duydang2311/ragemp-utils-server';
 import { createRemoteMessenger } from '@kernel/messenger';
+import type { Runtime } from '@kernel/runtime';
 import { createDb } from '@repo/db';
 import config from 'config';
 import dotenv from 'dotenv';
@@ -7,8 +9,14 @@ import pino from 'pino';
 import type { IplOptions } from './features/ipls/common/ipl-options';
 import { createIplService } from './features/ipls/common/ipl-service';
 import ipls from './features/ipls/scripts';
+import { RageMpNoClip } from './features/noclip/ragemp-no-clip';
 import { createRageMpClosetService } from './features/players/common/closet-service';
 import players from './features/players/scripts';
+import { createRageMpRaceService } from './features/races/default-race-service';
+import { LRURaceMapCache } from './features/races/lru-map-cache';
+import { RacePointLapResolver, RacePointRallyResolver } from './features/races/race-point-resolver';
+import races from './features/races/scripts';
+import { RageMpGarageService } from './features/vehicles/garage-service';
 
 dotenv.config();
 
@@ -31,19 +39,31 @@ const env = {
 };
 
 const messenger = createRemoteMessenger();
+const db = createDb(env.DB_CONNECTION_STRING);
 
-const runtime = {
+const runtime: Runtime = {
     logger: pino(),
     messenger,
     fetch,
     env,
-    db: createDb(env.DB_CONNECTION_STRING),
-    ipl: createIplService(messenger),
+    db,
+    iplService: createIplService(messenger),
     iplOptions: config.get<IplOptions>('Ipl'),
     closetService: createRageMpClosetService(),
+    raceService: createRageMpRaceService(),
+    noClip: new RageMpNoClip(messenger),
+    streamedMetaStore: new RageMpStreamedMetaStore({
+        debug: true,
+        entityTypes: ['player'],
+    }),
+    raceMapCache: new LRURaceMapCache(db),
+    racePointResolvers: [new RacePointLapResolver(), new RacePointRallyResolver()],
+    garageService: new RageMpGarageService(db),
 };
 
-for (const script of [...players, ...ipls]) {
+runtime.streamedMetaStore.init();
+
+for (const script of [...players, ...ipls, ...races]) {
     script.fn({
         ...runtime,
         logger: runtime.logger.child({ instance: `script:${script.name}` }),

@@ -1,6 +1,8 @@
 {
     "name": "my-turborepo",
     "devDependencies": {
+        "@duydang2311/ragemp-utils-meta": "^0.0.1",
+        "@duydang2311/ragemp-utils-shared": "^0.0.5",
         "turbo": "^2.5.4"
     },
     "description": "A barebones Turborepo example for working with Task Graphs.",

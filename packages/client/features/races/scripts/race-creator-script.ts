@@ -39,6 +39,7 @@ export default createScript({
         });
 
         ui.on('race:creator:changeMode', (mode) => {
+            mp.console.logInfo('race:creator:changeMode, ' + mode);
             handleChangeMode(mode);
         });
 

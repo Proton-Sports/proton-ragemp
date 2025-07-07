@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react';
-import Button from '../../lib/components/Button';
+import { Dialog } from '@headlessui/react';
+import { RaceType } from '@repo/shared';
 import clsx from 'clsx';
 import { AnimatePresence, motion } from 'framer-motion';
-import { RaceType } from '../../lib/models/race';
-import { Dialog } from '@headlessui/react';
+import { useEffect, useState } from 'react';
+import Button from '../../lib/components/Button';
 
 type Participant = { id: number; name: string };
 
@@ -344,8 +344,6 @@ function Info({ race: { id, name }, details }: { race: Race; details?: RaceDetai
 
 function displayRaceType(type?: RaceType) {
   switch (type) {
-    case RaceType.None:
-      return 'None';
     case RaceType.Laps:
       return 'Laps';
     case RaceType.PointToPoint:

@@ -1,8 +1,6 @@
 import { attempt } from '@duydang2311/attempt';
-import { getDistanceSquared } from '@repo/shared';
-import type { RacePointDto } from '@repo/shared/race';
-import { RaceType } from '@repo/shared/race';
-import type { IRacePointResolver } from './common/race-point-resolver';
+import { getDistanceSquared, RaceType, type RacePointDto } from '@repo/shared';
+import type { RacePointResolver } from './common/race-point-resolver';
 import type { RaceService } from './common/race-service';
 import { RaceStatus } from './common/race-status';
 
@@ -11,7 +9,7 @@ export class DefaultRaceService implements RaceService {
     private static readonly BLIP_SPRITE_ARROW = 14;
 
     private readonly racePointArray: RacePointDto[] = [];
-    private readonly raceTypeToResolverMap = new Map<RaceType, IRacePointResolver>();
+    private readonly raceTypeToResolverMap = new Map<RaceType, RacePointResolver>();
     private readonly eventHandlers = {
         racePointHit: new Set<(index: number) => void>(),
         started: new Set<() => void>(),
@@ -33,7 +31,7 @@ export class DefaultRaceService implements RaceService {
     public iplName: string | null = null;
     public status: RaceStatus = RaceStatus.None;
 
-    constructor(resolvers: IRacePointResolver[]) {
+    constructor(resolvers: RacePointResolver[]) {
         resolvers.forEach((resolver) => {
             this.raceTypeToResolverMap.set(resolver.supportedRaceType, resolver);
         });
@@ -318,3 +316,7 @@ export class DefaultRaceService implements RaceService {
         }
     }
 }
+
+export const createDefaultRaceService = (resolvers: RacePointResolver[]) => {
+    return new DefaultRaceService(resolvers);
+};

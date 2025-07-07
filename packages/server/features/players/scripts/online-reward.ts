@@ -36,8 +36,8 @@ export default createScript({
             // Process all players
             for (const player of mp.players.toArray()) {
                 // Skip players that don't have a valid protonId
-                const protonId = player.getVariable('protonId');
-                if (typeof protonId !== 'number' || protonId === -1) {
+                const protonId = player.protonId;
+                if (typeof protonId !== 'number' || protonId <= 0) {
                     continue;
                 }
 
@@ -71,7 +71,7 @@ export default createScript({
 
             // Update money in database
             try {
-                const protonIds = rewardingPlayers.map((p) => p.getVariable('protonId') as number);
+                const protonIds = rewardingPlayers.map((p) => p.protonId as number);
 
                 // Update all matched users with a single query
                 await db

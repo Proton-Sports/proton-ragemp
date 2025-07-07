@@ -1,15 +1,14 @@
+import { KeyCode } from '@duydang2311/ragemp-utils-shared';
 import { createScript } from '@kernel/script';
 
 export default createScript({
     name: 'toggle-cursor-key',
-    fn: ({ game }) => {
+    fn: ({ game, ui }) => {
         let toggle = false;
-
-        // Handle keyup event for Alt key (menu key)
-        game.keys.bind(0x12, () => {
-            // 0x12 is Alt key
+        game.keys.bind(KeyCode.Alt, () => {
             toggle = !toggle;
             game.cursor.show(toggle);
+            ui.focus(toggle);
         });
     },
 });

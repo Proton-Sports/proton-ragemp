@@ -1,5 +1,5 @@
+import { attempt, type Attempt } from '@duydang2311/attempt';
 import type { Messenger } from '@kernel/messenger';
-import { attempt, type Attempt } from '@repo/shared';
 import { TimeoutError } from '@repo/shared/models/error';
 
 export interface IplService {
@@ -51,7 +51,7 @@ class RageMpIplService implements IplService {
         }
 
         const id = ++this.#counter;
-        return await attempt.promise(
+        return await attempt.async(
             () =>
                 new Promise<void>((resolve, reject) => {
                     const timeoutId = setTimeout(() => {

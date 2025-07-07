@@ -1,9 +1,9 @@
-import { RaceType } from '@repo/shared/race';
-import type { IRacePointResolver } from './common/race-point-resolver';
+import { RaceType } from '@repo/shared';
+import type { RacePointResolver } from './common/race-point-resolver';
 import { RacePointResolverInput } from './common/race-point-resolver-input';
 import { RacePointResolverOutput } from './common/race-point-resolver-output';
 
-export class RacePointLapResolver implements IRacePointResolver {
+class RacePointLapResolver implements RacePointResolver {
     public get supportedRaceType(): RaceType {
         return RaceType.Laps;
     }
@@ -20,14 +20,18 @@ export class RacePointLapResolver implements IRacePointResolver {
             }
             ++output.lap;
         }
-        
+
         output.index = (output.index + 1) % input.totalPoints;
 
         // Not the final point
         if (output.index !== 0 || output.lap !== input.totalLaps) {
             output.nextIndex = (output.index + 1) % input.totalPoints;
         }
-        
+
         return output;
     }
 }
+
+export const createRacePointLapResolver = () => {
+    return new RacePointLapResolver();
+};

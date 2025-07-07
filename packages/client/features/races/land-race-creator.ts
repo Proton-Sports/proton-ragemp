@@ -3,7 +3,7 @@ import type { RaceCreator } from './common/race-creator';
 import { RacePointData } from './common/race-point-data';
 import { StartPositionData } from './common/start-position-data';
 
-export class LandRaceCreator implements RaceCreator {
+class LandRaceCreator implements RaceCreator {
     private static readonly BLIP_SPRITE_RADAR_RACE_LAND = 315;
     private static readonly BLIP_SPRITE_RADAR_PLACEHOLDER6 = 373;
     private static readonly RADAR_RACE_OPEN_WHEEL = 726;
@@ -362,3 +362,7 @@ export class LandRaceCreator implements RaceCreator {
         return new StartPositionData(position, rotation, numberMarker, boxMarker, blip);
     }
 }
+
+export const createLandRaceCreator = () => {
+    return new LandRaceCreator();
+};

@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { FaEdit } from 'react-icons/fa';
-import { FaSearch } from 'react-icons/fa';
-import { BiRename } from 'react-icons/bi';
-import { HiTrash } from 'react-icons/hi2';
+import { useRuntime } from '$lib/contexts/runtime-context';
 import { Popover } from '@headlessui/react';
+import React, { useEffect, useState } from 'react';
+import { BiRename } from 'react-icons/bi';
+import { FaEdit, FaSearch } from 'react-icons/fa';
+import { HiTrash } from 'react-icons/hi2';
 import Button from '../../lib/components/Button';
 import IplListbox from './IplListbox';
 
@@ -18,6 +18,7 @@ export default function Creator() {
   const [editType, setEditType] = useState<'start' | 'race' | null>(null);
   const [ipls, setIpls] = useState<string[]>([]);
   const [selectedIpl, setSelectedIpl] = useState<string | null>(null);
+  const { messenger } = useRuntime();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchBar(e.target.value.toLowerCase());
@@ -30,47 +31,41 @@ export default function Creator() {
     setMapName(e.target.value);
   };
 
+  messenger.on('race-menu-creator:data', ({ maps, ipls }: { maps: Map[]; ipls: string[] }) => {
+    setMaps(maps);
+    setIpls(ipls);
+  });
+
+  messenger.on('race-menu-creator:deleteMap', (id: number) => {
+    setMaps((maps) => maps.filter((x) => x.id !== id));
+  });
+
   useEffect(() => {
-    const handleMapData = ({ maps, ipls }: { maps: Map[]; ipls: string[] }) => {
-      setMaps(maps);
-      setIpls(ipls);
-    };
-
-    function handleDeleteMap(id: number) {
-      setMaps((maps) => maps.filter((x) => x.id !== id));
-    }
-
-    alt.on('race-menu-creator:data', handleMapData);
-    alt.on('race-menu-creator:deleteMap', handleDeleteMap);
-    alt.emit('race-menu-creator:data');
-
-    return () => {
-      alt.off('race-menu-creator:data', handleMapData);
-      alt.off('race-menu-creator:deleteMap', handleDeleteMap);
-    };
-  }, []);
+    messenger.publish('race-menu-creator:data');
+  }, [messenger]);
 
   // function openCreatorMode(route: string) {
-  //   alt.emit('race-menu-creator:changePage', route);
+  //  messenger.publish('race-menu-creator:changePage', route);
   // }
 
   function editMap(map: number) {
     if (!editType) return;
-    alt.emit('race-menu-creator:editMap', map, editType);
+    messenger.publish('race-menu-creator:editMap', map, editType);
   }
 
   function cancelMap() {
-    alt.emit('race-menu-creator:cancelMap');
+    messenger.publish('race-menu-creator:cancelMap');
     setMapName('');
   }
 
   function createMap() {
     if (!mapName) return;
-    alt.emit('race-menu-creator:createMap', mapName, selectedIpl);
+    console.log('race-menu-creator:createMap', mapName, selectedIpl);
+    messenger.publish('race-menu-creator:createMap', mapName, selectedIpl);
   }
 
   function deleteMap(id: number) {
-    alt.emit('race-menu-creator:deleteMap', id);
+    messenger.publish('race-menu-creator:deleteMap', id);
   }
 
   function handleIplChange(value: string | null) {

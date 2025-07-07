@@ -9,6 +9,8 @@
     },
     "devDependencies": {
         "@duydang2311/attempt": "^0.0.8",
+        "@duydang2311/ragemp-utils-client": "^0.0.7",
+        "@duydang2311/ragemp-utils-shared": "^0.0.7",
         "@ragempcommunity/types-client": "^2.1.9",
         "@repo/shared": "workspace:*",
         "@types/bun": "^1.2.17",

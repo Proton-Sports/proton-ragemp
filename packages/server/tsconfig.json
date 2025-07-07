@@ -23,7 +23,9 @@
         "noPropertyAccessFromIndexSignature": false,
         "rootDir": ".",
         "paths": {
+            "~/*": ["./*"],
             "@kernel/*": ["./kernel/*"]
         }
-    }
+    },
+    "include": ["./", "../shared/streamed-meta.d.ts"]
 }

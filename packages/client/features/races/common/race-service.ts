@@ -1,7 +1,7 @@
 import type { Attempt } from '@duydang2311/attempt';
-import type { RacePointDto, RaceType } from '@repo/shared/race';
+import type { RacePointDto, RaceType } from '@repo/shared';
 import { RaceStatus } from '../common/race-status';
-import type { IRacePointResolver } from './race-point-resolver';
+import type { RacePointResolver } from './race-point-resolver';
 
 export interface RaceService {
     on(eventName: 'racePointHit', handler: (index: number) => void): () => void;
@@ -21,7 +21,7 @@ export interface RaceService {
     addRacePoints(points: RacePointDto[]): void;
     loadRacePoint(checkpointType: number, index: number, nextIndex: number | null): CheckpointMp;
     unloadRacePoint(): void;
-    getPointResolver(): Attempt<IRacePointResolver, 'NOT_FOUND'>;
+    getPointResolver(): Attempt<RacePointResolver, 'NOT_FOUND'>;
     start(): void;
     stop(): void;
 }

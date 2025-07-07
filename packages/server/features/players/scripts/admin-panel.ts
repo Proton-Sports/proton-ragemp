@@ -175,8 +175,8 @@ export default createScript({
         }
 
         async function banPlayer(player: PlayerMp): Promise<void> {
-            const protonId = player.getVariable('protonId');
-            if (typeof protonId !== 'number' || protonId === -1) {
+            const protonId = player.protonId;
+            if (typeof protonId !== 'number' || protonId <= 0) {
                 return;
             }
 

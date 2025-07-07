@@ -1,5 +1,6 @@
+import { attempt, type Attempt } from '@duydang2311/attempt';
 import { createLock } from '@repo/shared/lock';
-import { hashUiEventName } from '@repo/shared/utils';
+import { hashUiEventName, promiseWithResolvers } from '@repo/shared/utils';
 
 export type Ui = BrowserMp & {
     on(name: string, handler: (...args: any[]) => void): () => void;
@@ -11,6 +12,7 @@ export type Ui = BrowserMp & {
 export interface UiRouter {
     isMounted(route: string): boolean;
     mount(route: string, props?: Record<PropertyKey, any>): void;
+    mountAsync(route: string): Promise<Attempt<void, 'timeout'>>;
     unmount(route: string): void;
     onMount(route: string, handler: (...args: any[]) => void | (() => void)): void;
     onDestroy(route: string, handler: (...args: any[]) => void | (() => void)): void;
@@ -44,11 +46,18 @@ export const createUi = (url: string): Ui => {
     return Object.assign(browser, ext);
 };
 
+interface MountAsyncState {
+    timeout: NodeJS.Timeout;
+    promise: Promise<Attempt<void, 'timeout'>>;
+    resolve: (value: Attempt<void, 'timeout'> | PromiseLike<Attempt<void, 'timeout'>>) => void;
+}
+
 const createRouter = (browser: BrowserMp): UiRouter => {
     const onMountHandlers = new Map<string, (() => void)[]>();
     const onDestroyHandlers = new Map<string, (() => void)[]>();
     const transientOnDestroyHandlers = new Map<string, (() => void)[]>();
     const mountedRoutes = new Set<string>();
+    const mountAsyncStates = new Map<string, MountAsyncState>();
 
     const addHandler = (map: Map<string, (() => void)[]>, name: string, handler: () => void) => {
         let handlers = map.get(name);
@@ -74,8 +83,16 @@ const createRouter = (browser: BrowserMp): UiRouter => {
 
     mp.console.logInfo(`mp.events.add ${hashUiEventName('ui.router.mount')}`);
     mp.events.add(hashUiEventName('ui.router.mount'), (route: string) => {
-        mountedRoutes.add(route);
         mp.console.logInfo('ui.router.mount ' + route);
+
+        mountedRoutes.add(route);
+
+        const mountAsyncState = mountAsyncStates.get(route);
+        if (mountAsyncState) {
+            clearTimeout(mountAsyncState.timeout);
+            mountAsyncState.resolve(attempt.ok<void>(undefined));
+        }
+
         const handlers = onMountHandlers.get(route);
         if (handlers != null) {
             for (const handler of handlers) {
@@ -105,6 +122,25 @@ const createRouter = (browser: BrowserMp): UiRouter => {
         mount: (route: string) => {
             mountedRoutes.add(route);
             browser.call(hashUiEventName('ui.router.mount'), route);
+        },
+        mountAsync: (route: string) => {
+            let state = mountAsyncStates.get(route);
+            if (!state) {
+                const { promise, resolve } = promiseWithResolvers<Attempt<void, 'timeout'>>();
+                const timeout = setTimeout(() => {
+                    resolve(attempt.fail('timeout'));
+                }, 3000);
+                promise.finally(() => {
+                    mountAsyncStates.delete(route);
+                });
+                state = {
+                    timeout,
+                    promise,
+                    resolve,
+                };
+                mountAsyncStates.set(route, state);
+            }
+            return state.promise;
         },
         unmount: (route: string) => {
             mountedRoutes.delete(route);

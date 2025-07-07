@@ -1,29 +1,21 @@
+import type { Vector3 } from '@duydang2311/ragemp-utils-shared';
+import { relations } from 'drizzle-orm';
 import {
-    pgTable,
-    serial,
-    text,
-    integer,
     bigint,
     boolean,
-    timestamp,
-    varchar,
-    real,
-    jsonb,
-    primaryKey,
-    uuid,
-    unique,
     index,
+    integer,
+    jsonb,
+    pgTable,
+    primaryKey,
+    real,
+    serial,
+    timestamp,
+    unique,
+    uuid,
+    varchar,
 } from 'drizzle-orm/pg-core';
-import {
-    banKindEnum,
-    userRoleEnum,
-    wheelTypeEnum,
-    type Vector3,
-    type Rgba,
-    type FaceFeature,
-    type FaceOverlay,
-} from './shared';
-import { relations } from 'drizzle-orm';
+import { banKindEnum, userRoleEnum, type FaceFeature, type FaceOverlay, type Rgba } from './shared';
 
 // User-related tables
 export const users = pgTable('users', {
@@ -37,8 +29,8 @@ export const users = pgTable('users', {
 export const sessions = pgTable('sessions', {
     id: serial('id').primaryKey(),
     isActive: boolean('is_active').notNull().default(true),
-    timestampLogin: timestamp('timestamp_login').notNull().defaultNow(),
-    timestampLogout: timestamp('timestamp_logout'),
+    timestampLogin: timestamp('timestamp_login', { withTimezone: true, mode: 'date' }).notNull().defaultNow(),
+    timestampLogout: timestamp('timestamp_logout', { withTimezone: true, mode: 'date' }),
     ipv4: varchar('ipv4', { length: 45 }).notNull().default(''),
     ipv6: varchar('ipv6', { length: 128 }).notNull().default(''),
     country: varchar('country', { length: 64 }).notNull().default(''),
@@ -104,7 +96,7 @@ export const wheelVariations = pgTable(
     {
         id: serial('id').primaryKey(),
         model: varchar('model', { length: 255 }),
-        type: wheelTypeEnum('type').notNull(),
+        type: integer('type').notNull(),
         name: varchar('name', { length: 64 }).notNull().default(''),
         value: integer('value').notNull(),
         price: integer('price').notNull(),
@@ -126,12 +118,12 @@ export const playerVehicles = pgTable('player_vehicles', {
         .notNull()
         .references(() => users.id),
     vehicleId: integer('vehicle_id').notNull(),
-    model: varchar('model', { length: 255 }).notNull(),
+    model: bigint('model', { mode: 'number' }).notNull(),
     displayName: varchar('display_name', { length: 255 }).notNull().default(''),
     price: integer('price').notNull(),
     altVColor: integer('alt_v_color').notNull(),
     category: varchar('category', { length: 64 }).notNull().default(''),
-    purchasedDate: timestamp('purchased_date').notNull().defaultNow(),
+    purchasedDate: timestamp('purchased_date', { withTimezone: true, mode: 'date' }).notNull().defaultNow(),
     primaryColor: jsonb('primary_color').$type<Rgba>().notNull(),
     secondaryColor: jsonb('secondary_color').$type<Rgba>().notNull(),
 });
@@ -200,7 +192,7 @@ export const closets = pgTable('closets', {
         .notNull()
         .references(() => clothes.id),
     isEquiped: boolean('is_equiped').notNull().default(false),
-    purchaseTimestamp: timestamp('purchase_timestamp').notNull().defaultNow(),
+    purchaseTimestamp: timestamp('purchase_timestamp', { withTimezone: true, mode: 'date' }).notNull().defaultNow(),
 });
 
 // Race-related tables
@@ -245,14 +237,12 @@ export const userRaceRestorations = pgTable('user_race_restorations', {
     accumulatedDistance: real('accumulated_distance').notNull(),
     partialDistance: real('partial_distance').notNull(),
     nextRacePointIndex: integer('next_race_point_index'),
-    finishTime: bigint('finish_time', { mode: 'bigint' }).notNull(),
+    finishTime: timestamp('finish_time', { withTimezone: true, mode: 'date' }).notNull(),
     x: real('x').notNull(),
     y: real('y').notNull(),
     z: real('z').notNull(),
-    roll: real('roll').notNull(),
-    pitch: real('pitch').notNull(),
-    yaw: real('yaw').notNull(),
-    vehicleModel: varchar('vehicle_model', { length: 255 }).notNull(),
+    heading: real('heading').notNull(),
+    vehicleModel: bigint('vehicle_model', { mode: 'number' }).notNull(),
 });
 
 export const userRacePointRestorations = pgTable(
@@ -263,7 +253,7 @@ export const userRacePointRestorations = pgTable(
             .references(() => users.id),
         lap: integer('lap').notNull(),
         index: integer('index').notNull(),
-        time: timestamp('time').notNull(),
+        time: timestamp('time', { withTimezone: true, mode: 'date' }).notNull(),
     },
     (table) => [primaryKey({ columns: [table.userId, table.lap, table.index] })],
 );
@@ -274,3 +264,81 @@ export const closetsRelations = relations(closets, ({ one }) => ({
         references: [clothes.id],
     }),
 }));
+
+export const raceMapsRelations = relations(raceMaps, ({ many }) => ({
+    racePoints: many(racePoints),
+    startPoints: many(raceStartPoints),
+}));
+
+export const racePointsRelations = relations(racePoints, ({ one }) => ({
+    map: one(raceMaps, {
+        fields: [racePoints.mapId],
+        references: [raceMaps.id],
+    }),
+}));
+
+export const raceStartPointsRelations = relations(raceStartPoints, ({ one }) => ({
+    map: one(raceMaps, {
+        fields: [raceStartPoints.mapId],
+        references: [raceMaps.id],
+    }),
+}));
+
+export const playerVehiclesRelations = relations(playerVehicles, ({ many, one }) => ({
+    user: one(users, {
+        fields: [playerVehicles.playerId],
+        references: [users.id],
+    }),
+    mods: many(playerVehicleMods),
+    activeMods: many(playerVehicleActiveMods),
+    wheelVariations: many(playerVehicleWheelVariations),
+    activeWheelVariations: many(playerVehicleActiveWheelVariations),
+}));
+
+export const modsRelations = relations(mods, ({ many }) => ({
+    playerVehicleMods: many(playerVehicleMods),
+}));
+
+export const wheelVariationsRelations = relations(wheelVariations, ({ many }) => ({
+    playerVehicleWheelVariations: many(playerVehicleWheelVariations),
+}));
+
+export const playerVehicleActiveModsRelations = relations(playerVehicleActiveMods, ({ one }) => ({
+    playerVehicleMod: one(playerVehicleMods, {
+        fields: [playerVehicleActiveMods.playerVehicleModId],
+        references: [playerVehicleMods.id],
+    }),
+}));
+
+export const playerVehicleModsRelations = relations(playerVehicleMods, ({ one }) => ({
+    mod: one(mods, {
+        fields: [playerVehicleMods.modId],
+        references: [mods.id],
+    }),
+    playerVehicle: one(playerVehicles, {
+        fields: [playerVehicleMods.playerVehicleId],
+        references: [playerVehicles.id],
+    }),
+}));
+
+export const playerVehicleWheelVariationsRelations = relations(playerVehicleWheelVariations, ({ one }) => ({
+    wheelVariation: one(wheelVariations, {
+        fields: [playerVehicleWheelVariations.wheelVariationId],
+        references: [wheelVariations.id],
+    }),
+    playerVehicle: one(playerVehicles, {
+        fields: [playerVehicleWheelVariations.playerVehicleId],
+        references: [playerVehicles.id],
+    }),
+}));
+
+export const playerVehicleActiveWheelVariationsRelations = relations(playerVehicleActiveWheelVariations, ({ one }) => ({
+    playerVehicleWheelVariation: one(playerVehicleWheelVariations, {
+        fields: [playerVehicleActiveWheelVariations.playerVehicleWheelVariationId],
+        references: [playerVehicleWheelVariations.id],
+    }),
+}));
+
+export type RaceMap = typeof raceMaps.$inferSelect;
+export type RacePoint = typeof racePoints.$inferSelect;
+export type RaceStartPoint = typeof raceStartPoints.$inferSelect;

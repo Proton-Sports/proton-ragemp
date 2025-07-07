@@ -19,7 +19,7 @@ interface Props {
   durationSeconds: number;
   maxParticipants: number;
   participants: Participant[];
-  vehicles: string[];
+  vehicles: Vehicle[];
   ownedVehicles: Vehicle[];
 }
 
@@ -34,25 +34,21 @@ interface Data {
 
 interface Vehicle {
   id?: number;
-  model: string;
+  model: number;
+  displayName: string;
 }
 
 export default function Index(props: Props) {
   const [data, setData] = useState<Data>({
     ...props,
-    vehicles: [
-      ...props.vehicles.map((a) => ({
-        model: a,
-      })),
-      ...props.ownedVehicles,
-    ],
+    vehicles: [...props.vehicles, ...props.ownedVehicles],
   });
   const [isReady, setIsReady] = useState(data.participants.find((a) => a.id === props.id)?.isReady ?? false);
   const [remainingSeconds, setRemainingSeconds] = useState(data.durationSeconds);
   const [countdownSeconds, setCountdownSeconds] = useState<number>(0);
   const selected = useMemo(() => {
     const found = data.participants.find((a) => a.id === props.id);
-    return found?.vehicle.id ? found.vehicle.id : found?.vehicle.model ?? null;
+    return (found?.vehicle.id == null ? found?.vehicle.model : found.vehicle.id) ?? null;
   }, [props.id, data.participants]);
 
   useEffect(() => {
@@ -163,11 +159,8 @@ export default function Index(props: Props) {
                 vehicles={data.vehicles}
                 selected={selected}
                 onSelectedChange={(selected) => {
-                  const vehicle = (typeof selected === 'number'
-                    ? data.vehicles.find((a) => a.id === selected)
-                    : typeof selected === 'string'
-                    ? data.vehicles.find((a) => a.id == null && a.model === selected)
-                    : null) ?? { model: '' };
+                  const vehicle = data.vehicles.find((a) => a.id === selected || a.model === selected);
+                  if (!vehicle) return;
                   alt.emit('race-countdown.vehicle.change', vehicle);
                   setData((v) => ({
                     ...v,
@@ -212,16 +205,11 @@ function Vehicles({
   onSelectedChange,
 }: {
   vehicles: Vehicle[];
-  selected: number | string | null;
+  selected: number | null;
   onSelectedChange: (value: number | string | null) => void;
 }) {
   const label = useMemo(() => {
-    const found =
-      typeof selected === 'number'
-        ? vehicles.find((a) => a.id === selected)
-        : typeof selected === 'string'
-        ? vehicles.find((a) => a.id == null && a.model === selected)
-        : null;
+    const found = vehicles.find((a) => a.id === selected || a.model === selected);
     return found?.model ?? selected;
   }, [selected, vehicles]);
   return (

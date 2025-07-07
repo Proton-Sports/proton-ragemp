@@ -1,10 +1,11 @@
 {
-  "name": "@repo/shared",
-  "private": true,
-  "devDependencies": {
-    "@types/bun": "^1.2.17"
-  },
-  "peerDependencies": {
-    "typescript": "^5.8.3"
-  }
+    "name": "@repo/shared",
+    "private": true,
+    "devDependencies": {
+        "@duydang2311/ragemp-utils-shared": "^0.0.7",
+        "@types/bun": "^1.2.17"
+    },
+    "peerDependencies": {
+        "typescript": "^5.8.3"
+    }
 }

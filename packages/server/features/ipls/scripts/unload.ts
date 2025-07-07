@@ -2,7 +2,7 @@ import { createScript } from '@kernel/script';
 
 export default createScript({
     name: 'unload-default-ipls',
-    fn: ({ messenger, logger, ipl, iplOptions }) => {
+    fn: ({ messenger, logger, iplService: ipl, iplOptions }) => {
         messenger.on('authentication.login', (player) => {
             ipl.load(player, 'dlc_mpexample');
 

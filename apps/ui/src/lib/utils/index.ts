@@ -18,3 +18,11 @@ export const tryParseJSON = (value: unknown): Attempt<unknown, unknown> => {
 
   return attempt(() => JSON.parse(value))();
 };
+
+export const combine = (...fns: (() => void)[]) => {
+  return () => {
+    for (const fn of fns) {
+      fn();
+    }
+  };
+};

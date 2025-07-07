@@ -4,6 +4,8 @@
     "": {
       "name": "my-turborepo",
       "devDependencies": {
+        "@duydang2311/ragemp-utils-meta": "^0.0.1",
+        "@duydang2311/ragemp-utils-shared": "^0.0.5",
         "turbo": "^2.5.4",
       },
     },
@@ -62,6 +64,8 @@
       "name": "@repo/client",
       "devDependencies": {
         "@duydang2311/attempt": "^0.0.8",
+        "@duydang2311/ragemp-utils-client": "^0.0.7",
+        "@duydang2311/ragemp-utils-shared": "^0.0.7",
         "@ragempcommunity/types-client": "^2.1.9",
         "@repo/shared": "workspace:*",
         "@types/bun": "^1.2.17",
@@ -87,26 +91,31 @@
       "name": "@repo/server",
       "devDependencies": {
         "@duydang2311/attempt": "^0.0.8",
+        "@duydang2311/ragemp-utils-server": "^0.0.7",
+        "@duydang2311/ragemp-utils-shared": "^0.0.7",
         "@ragempcommunity/types-server": "^2.1.9",
         "@repo/db": "workspace:*",
         "@repo/shared": "workspace:*",
-        "@types/bun": "^1.2.17",
+        "@types/bun": "^1.2.18",
         "@types/config": "^3.3.5",
         "@types/node": "^14.18.63",
         "config": "^4.0.0",
-        "dotenv": "^16.5.0",
+        "dotenv": "^16.6.1",
         "drizzle-orm": "^0.44.2",
         "got": "^14.4.7",
+        "lru-cache": "^10.4.3",
         "node-fetch": "^3.3.2",
         "pino": "^9.7.0",
         "tiny-invariant": "^1.3.3",
         "tsup": "^8.5.0",
         "typescript": "^5.8.3",
+        "uuid": "^11.1.0",
       },
     },
     "packages/shared": {
       "name": "@repo/shared",
       "devDependencies": {
+        "@duydang2311/ragemp-utils-shared": "^0.0.7",
         "@types/bun": "^1.2.17",
       },
       "peerDependencies": {
@@ -124,6 +133,14 @@
     "@drizzle-team/brocli": ["@drizzle-team/brocli@0.10.2", "", {}, "sha512-z33Il7l5dKjUgGULTqBsQBQwckHh5AbIuxhdsIxDDiZAzBOrZO6q9ogcWC65kU382AfynTfgNumVcNIjuIua6w=="],
 
     "@duydang2311/attempt": ["@duydang2311/attempt@0.0.8", "", { "dependencies": { "@duydang2311/attempt": "." }, "peerDependencies": { "typescript": "^5" } }, "sha512-Eq0FeJC1c8S0Y/kJPn8cHWCGAHZx5iojvLk5glMmNUm4wyQ5FHMcl+KK1na4vqtMvwl+zD7O/yF38Hb6Zs63bQ=="],
+
+    "@duydang2311/ragemp-utils-client": ["@duydang2311/ragemp-utils-client@0.0.7", "", { "dependencies": { "@duydang2311/ragemp-utils-shared": "^0.0.1" }, "peerDependencies": { "@duydang2311/ragemp-utils-meta": "^0.0.1", "typescript": "^5" } }, "sha512-JA+/CTqI0k0M/xptxLqoaGgMEwsUrSqQUXLPhUR1kBDRm3H1NXvDSEqLKbKUngrJmVLOHVa1flQuCY8TdBq/GA=="],
+
+    "@duydang2311/ragemp-utils-meta": ["@duydang2311/ragemp-utils-meta@0.0.1", "", { "peerDependencies": { "typescript": "^5" } }, "sha512-t1KL0OXvSXlJTT8F3wRuOMQh8AK0NqkptHPdajaBORCKgnpKLP+SqYrDpyfo+0mLvEU7iZ5a8SBq+3Ez72W8YQ=="],
+
+    "@duydang2311/ragemp-utils-server": ["@duydang2311/ragemp-utils-server@0.0.7", "", { "dependencies": { "@duydang2311/ragemp-utils-shared": "^0.0.1" }, "peerDependencies": { "@duydang2311/ragemp-utils-meta": "^0.0.1", "typescript": "^5" } }, "sha512-CrHVBuRZaQ9PRL1GfOuwIEEfG2/i7G/EiM15dKO08ulQhEbTbD1Sfd4Y1jB4TbFdE6Zagm6PJbBJWhPUtm1N7g=="],
+
+    "@duydang2311/ragemp-utils-shared": ["@duydang2311/ragemp-utils-shared@0.0.5", "", { "peerDependencies": { "typescript": "^5" } }, "sha512-HMC+SI5gA1pskpZ5JNFH+VM6i1dkuX732NFa1vEGEbXYa8e+E3MOQVEOVxjjIrIpSieeW8BVKNSt5iHsAUPLXw=="],
 
     "@esbuild-kit/core-utils": ["@esbuild-kit/core-utils@3.3.2", "", { "dependencies": { "esbuild": "~0.18.20", "source-map-support": "^0.5.21" } }, "sha512-sPRAnw9CdSsRmEtnsl2WXWdyquogVpB3yZ3dgwJfe8zrOzTsV7cJvmwrKVa+0ma5BoiGJ+BoqkMvawbayKUsqQ=="],
 
@@ -571,7 +588,7 @@
 
     "@tanstack/virtual-core": ["@tanstack/virtual-core@3.13.11", "", {}, "sha512-ORL6UyuZJ0D9X33LDR4TcgcM+K2YiS2j4xbvH1vnhhObwR1Z4dKwPTL/c0kj2Yeb4Yp2lBv1wpyVaqlohk8zpg=="],
 
-    "@types/bun": ["@types/bun@1.2.17", "", { "dependencies": { "bun-types": "1.2.17" } }, "sha512-l/BYs/JYt+cXA/0+wUhulYJB6a6p//GTPiJ7nV+QHa8iiId4HZmnu/3J/SowP5g0rTiERY2kfGKXEK5Ehltx4Q=="],
+    "@types/bun": ["@types/bun@1.2.18", "", { "dependencies": { "bun-types": "1.2.18" } }, "sha512-Xf6RaWVheyemaThV0kUfaAUvCNokFr+bH8Jxp+tTZfx7dAPA8z9ePnP9S9+Vspzuxxx9JRAXhnyccRj3GyCMdQ=="],
 
     "@types/config": ["@types/config@3.3.5", "", {}, "sha512-itq2HtXQBrNUKwMNZnb9mBRE3T99VYCdl1gjST9rq+9kFaB1iMMGuDeZnP88qid73DnpAMKH9ZolqDpS1Lz7+w=="],
 
@@ -777,7 +794,7 @@
 
     "buffer-from": ["buffer-from@1.1.2", "", {}, "sha512-E+XQCRwSbaaiChtv6k6Dwgc+bx+Bs6vuKJHHl5kox/BaKbhiXzqQOwK4cO22yElGp2OCmjwVhT3HmxgyPGnJfQ=="],
 
-    "bun-types": ["bun-types@1.2.17", "", { "dependencies": { "@types/node": "*" } }, "sha512-ElC7ItwT3SCQwYZDYoAH+q6KT4Fxjl8DtZ6qDulUFBmXA8YB4xo+l54J9ZJN+k2pphfn9vk7kfubeSd5QfTVJQ=="],
+    "bun-types": ["bun-types@1.2.18", "", { "dependencies": { "@types/node": "*" }, "peerDependencies": { "@types/react": "^19" } }, "sha512-04+Eha5NP7Z0A9YgDAzMk5PHR16ZuLVa83b26kH5+cp1qZW4F6FmAURngE7INf4tKOvCE69vYvDEwoNl1tGiWw=="],
 
     "bundle-require": ["bundle-require@5.1.0", "", { "dependencies": { "load-tsconfig": "^0.2.3" }, "peerDependencies": { "esbuild": ">=0.18" } }, "sha512-3WrrOuZiyaaZPWiEt4G3+IffISVC9HYlWueJEBWED4ZH4aIAC2PnkdnuRrR94M+w6yGWn4AglWtJtBI8YqvgoA=="],
 
@@ -837,7 +854,7 @@
 
     "dlv": ["dlv@1.1.3", "", {}, "sha512-+HlytyjlPKnIG8XuRG8WvmBP8xs8P71y+SKKS6ZXWoEgLuePxtDoUEiH7WkdePWrQ5JBpE6aoVqfZfJUQkjXwA=="],
 
-    "dotenv": ["dotenv@16.5.0", "", {}, "sha512-m/C+AwOAr9/W1UOIZUo232ejMNnJAJtYQjUbHoNTBNTJSvqzzDh7vnrei3o3r3m9blf6ZoDkvcw0VmozNRFJxg=="],
+    "dotenv": ["dotenv@16.6.1", "", {}, "sha512-uBq4egWHTcTt33a72vpSG0z3HnPuIl6NqYcTrKEg2azoEyl2hpW0zqlxysq2pK9HlDIHyHyakeYaYnSAwd8bow=="],
 
     "drizzle-kit": ["drizzle-kit@0.31.2", "", { "dependencies": { "@drizzle-team/brocli": "^0.10.2", "@esbuild-kit/esm-loader": "^2.5.5", "esbuild": "^0.25.4", "esbuild-register": "^3.5.0" }, "bin": { "drizzle-kit": "bin.cjs" } }, "sha512-Z2Uqxvu4HNFzlDkG3NQ2BYpII8SlOMkpjsC5XFh9TsYP2nYhfVamVjQ8spiMFXH3vGOyUt1cQ5FZ1JSgl6+8QQ=="],
 
@@ -1269,6 +1286,8 @@
 
     "util-deprecate": ["util-deprecate@1.0.2", "", {}, "sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw=="],
 
+    "uuid": ["uuid@11.1.0", "", { "bin": { "uuid": "dist/esm/bin/uuid" } }, "sha512-0/A9rDy9P7cJ+8w1c9WD9V//9Wj15Ce2MPz8Ri6032usz+NfePxx5AcN3bN+r6ZL6jEo066/yNYB3tn4pQEx+A=="],
+
     "virtua": ["virtua@0.41.5", "", { "peerDependencies": { "react": ">=16.14.0", "react-dom": ">=16.14.0", "solid-js": ">=1.0", "svelte": ">=5.0", "vue": ">=3.2" }, "optionalPeers": ["react", "react-dom", "solid-js", "svelte", "vue"] }, "sha512-x1vsA9qIQNBFcCs1rzCjyYdMvDu/kT6o6zwwQnyqFOFdOyIzqyzU3WfR/hJC8WxUZXSCo2LkuoqapL8VDDMQPg=="],
 
     "vite": ["vite@7.0.0", "", { "dependencies": { "esbuild": "^0.25.0", "fdir": "^6.4.6", "picomatch": "^4.0.2", "postcss": "^8.5.6", "rollup": "^4.40.0", "tinyglobby": "^0.2.14" }, "optionalDependencies": { "fsevents": "~2.3.3" }, "peerDependencies": { "@types/node": "^20.19.0 || >=22.12.0", "jiti": ">=1.21.0", "less": "^4.0.0", "lightningcss": "^1.21.0", "sass": "^1.70.0", "sass-embedded": "^1.70.0", "stylus": ">=0.54.8", "sugarss": "^5.0.0", "terser": "^5.16.0", "tsx": "^4.8.1", "yaml": "^2.4.2" }, "optionalPeers": ["@types/node", "jiti", "less", "lightningcss", "sass", "sass-embedded", "stylus", "sugarss", "terser", "tsx", "yaml"], "bin": { "vite": "bin/vite.js" } }, "sha512-ixXJB1YRgDIw2OszKQS9WxGHKwLdCsbQNkpJN171udl6szi/rIySHL6/Os3s2+oE4P/FLD4dxg4mD7Wust+u5g=="],
@@ -1293,6 +1312,10 @@
 
     "@duydang2311/attempt/@duydang2311/attempt": ["@duydang2311/attempt@file:.", {}],
 
+    "@duydang2311/ragemp-utils-client/@duydang2311/ragemp-utils-shared": ["@duydang2311/ragemp-utils-shared@0.0.1", "", { "peerDependencies": { "typescript": "^5" } }, "sha512-UIqeCHX860c9Ds+cFw8yVjGcCefeflSnu/szj99SWTsQky98H7rhdIvH+Y00/QcbdQuMdcsegm8sc88wAbMk5Q=="],
+
+    "@duydang2311/ragemp-utils-server/@duydang2311/ragemp-utils-shared": ["@duydang2311/ragemp-utils-shared@0.0.1", "", { "peerDependencies": { "typescript": "^5" } }, "sha512-UIqeCHX860c9Ds+cFw8yVjGcCefeflSnu/szj99SWTsQky98H7rhdIvH+Y00/QcbdQuMdcsegm8sc88wAbMk5Q=="],
+
     "@esbuild-kit/core-utils/esbuild": ["esbuild@0.18.20", "", { "optionalDependencies": { "@esbuild/android-arm": "0.18.20", "@esbuild/android-arm64": "0.18.20", "@esbuild/android-x64": "0.18.20", "@esbuild/darwin-arm64": "0.18.20", "@esbuild/darwin-x64": "0.18.20", "@esbuild/freebsd-arm64": "0.18.20", "@esbuild/freebsd-x64": "0.18.20", "@esbuild/linux-arm": "0.18.20", "@esbuild/linux-arm64": "0.18.20", "@esbuild/linux-ia32": "0.18.20", "@esbuild/linux-loong64": "0.18.20", "@esbuild/linux-mips64el": "0.18.20", "@esbuild/linux-ppc64": "0.18.20", "@esbuild/linux-riscv64": "0.18.20", "@esbuild/linux-s390x": "0.18.20", "@esbuild/linux-x64": "0.18.20", "@esbuild/netbsd-x64": "0.18.20", "@esbuild/openbsd-x64": "0.18.20", "@esbuild/sunos-x64": "0.18.20", "@esbuild/win32-arm64": "0.18.20", "@esbuild/win32-ia32": "0.18.20", "@esbuild/win32-x64": "0.18.20" }, "bin": { "esbuild": "bin/esbuild" } }, "sha512-ceqxoedUrcayh7Y7ZX6NdbbDzGROiyVBgC4PriJThBKSVPWnnFHZAkfI1lJT8QFkOwH4qOS2SJkS4wvpGl8BpA=="],
 
     "@eslint-community/eslint-utils/eslint-visitor-keys": ["eslint-visitor-keys@3.4.3", "", {}, "sha512-wpc+LXeiyiisxPlEkUzU6svyS1frIO3Mgxj1fdy7Pm8Ygzguax2N3Fa/D/ag1WqbOprdI+uY6wMUl8/a2G+iag=="],
@@ -1307,9 +1330,15 @@
 
     "@humanfs/node/@humanwhocodes/retry": ["@humanwhocodes/retry@0.3.1", "", {}, "sha512-JBxkERygn7Bv/GbN5Rv8Ul6LVknS+5Bp6RgDC/O8gEBU/yeH5Ui5C/OlWrTb6qct7LjjfT6Re2NxB0ln0yYybA=="],
 
+    "@repo/client/@duydang2311/ragemp-utils-shared": ["@duydang2311/ragemp-utils-shared@0.0.7", "", { "peerDependencies": { "typescript": "^5" } }, "sha512-CzbNA9iqK+8M3FB+Su0xGZrXP/r8+q3xFkn6SbGFZ9WqCwqmowvhVTFW15Lh+QO0A2hcAQDpdGysUZjua+jVow=="],
+
     "@repo/client/@types/node": ["@types/node@14.18.63", "", {}, "sha512-fAtCfv4jJg+ExtXhvCkCqUKZ+4ok/JQk01qDKhL5BDDoS3AxKXhV5/MAVUZyQnSEd2GT92fkgZl0pz0Q0AzcIQ=="],
 
+    "@repo/server/@duydang2311/ragemp-utils-shared": ["@duydang2311/ragemp-utils-shared@0.0.7", "", { "peerDependencies": { "typescript": "^5" } }, "sha512-CzbNA9iqK+8M3FB+Su0xGZrXP/r8+q3xFkn6SbGFZ9WqCwqmowvhVTFW15Lh+QO0A2hcAQDpdGysUZjua+jVow=="],
+
     "@repo/server/@types/node": ["@types/node@14.18.63", "", {}, "sha512-fAtCfv4jJg+ExtXhvCkCqUKZ+4ok/JQk01qDKhL5BDDoS3AxKXhV5/MAVUZyQnSEd2GT92fkgZl0pz0Q0AzcIQ=="],
+
+    "@repo/shared/@duydang2311/ragemp-utils-shared": ["@duydang2311/ragemp-utils-shared@0.0.7", "", { "peerDependencies": { "typescript": "^5" } }, "sha512-CzbNA9iqK+8M3FB+Su0xGZrXP/r8+q3xFkn6SbGFZ9WqCwqmowvhVTFW15Lh+QO0A2hcAQDpdGysUZjua+jVow=="],
 
     "@typescript-eslint/typescript-estree/minimatch": ["minimatch@9.0.5", "", { "dependencies": { "brace-expansion": "^2.0.1" } }, "sha512-G6T0ZX48xgozx7587koeX9Ys2NYy6Gmv//P89sEte9V9whIapMNF4idKxnW2QtCcLiTWlb/wfCabAtAFWhhBow=="],
 

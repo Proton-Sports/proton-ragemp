@@ -89,3 +89,19 @@ export const getDistanceSquared = (a: { x: number; y: number; z: number }, b: { 
 export const getDistance = (a: { x: number; y: number; z: number }, b: { x: number; y: number; z: number }) => {
     return Math.sqrt(getDistanceSquared(a, b));
 };
+
+export const promiseWithResolvers = <T>() => {
+    let resolve: (value: T | PromiseLike<T>) => void;
+    let reject: (reason?: any) => void;
+
+    const promise = new Promise<T>((res, rej) => {
+        resolve = res;
+        reject = rej;
+    });
+
+    return {
+        promise,
+        resolve: resolve!,
+        reject: reject!,
+    };
+};

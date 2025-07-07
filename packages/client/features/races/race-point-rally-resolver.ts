@@ -1,9 +1,9 @@
-import { RaceType } from '@repo/shared/race';
-import type { IRacePointResolver } from './common/race-point-resolver';
+import { RaceType } from '@repo/shared';
+import type { RacePointResolver } from './common/race-point-resolver';
 import { RacePointResolverInput } from './common/race-point-resolver-input';
 import { RacePointResolverOutput } from './common/race-point-resolver-output';
 
-export class RacePointRallyResolver implements IRacePointResolver {
+class RacePointRallyResolver implements RacePointResolver {
     public get supportedRaceType(): RaceType {
         return RaceType.PointToPoint;
     }
@@ -27,3 +27,7 @@ export class RacePointRallyResolver implements IRacePointResolver {
         return output;
     }
 }
+
+export const createRacePointRallyResolver = () => {
+    return new RacePointRallyResolver();
+};

@@ -1,3 +1,4 @@
+import type { StreamedMetaStore } from '@duydang2311/ragemp-utils-client';
 import type { NotificationService } from '@features/hud/common/notification-service';
 import type { IplService } from '@features/ipls/common/ipl-service';
 import type { NoClipService } from '@features/noclip/common/noclip-service';
@@ -19,4 +20,5 @@ export interface Runtime {
     readonly noclip: NoClipService;
     readonly raceCreator: RaceCreator;
     readonly raceService: RaceService;
+    readonly streamedMetaStore: StreamedMetaStore;
 }
