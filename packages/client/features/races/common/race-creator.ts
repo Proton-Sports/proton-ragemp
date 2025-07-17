@@ -1,5 +1,7 @@
+import type { Attempt } from '@duydang2311/attempt';
 import { RacePointData } from './race-point-data';
 import { StartPositionData } from './start-position-data';
+import type { NotFoundError } from '@repo/shared/models/error';
 
 export interface RaceCreator {
     readonly racePoints: Array<{ position: Vector3; radius: number }>;
@@ -9,13 +11,13 @@ export interface RaceCreator {
     clearStartPoints(): void;
     importStartPoints(points: Array<{ position: Vector3; rotation: Vector3 }>): void;
     addStartPoint(position: Vector3, rotation: Vector3): void;
-    tryRemoveStartPoint(position: Vector3, removed: { value: StartPositionData | null }): boolean;
+    removeStartPoint(position: Vector3): Attempt<StartPositionData, NotFoundError>;
 
     clearRacePoints(): void;
     importRacePoints(points: Array<{ position: Vector3; radius: number }>): void;
     addRacePoint(position: Vector3, radius: number): void;
-    tryRemoveRacePoint(position: Vector3, removed: { value: RacePointData | null }): boolean;
+    removeRacePoint(position: Vector3): Attempt<RacePointData, NotFoundError>;
 
-    tryGetClosestRaceCheckpointTo(position: Vector3, checkpoint: { value: CheckpointMp | null }): boolean;
+    getClosestRaceCheckpointTo(position: Vector3): CheckpointMp | null;
     updateRacePointPosition(checkpoint: CheckpointMp, position: Vector3): boolean;
 }

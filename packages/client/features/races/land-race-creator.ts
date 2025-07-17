@@ -2,6 +2,8 @@ import { getDistanceSquared } from '@repo/shared/utils';
 import type { RaceCreator } from './common/race-creator';
 import { RacePointData } from './common/race-point-data';
 import { StartPositionData } from './common/start-position-data';
+import { attempt } from '@duydang2311/attempt';
+import { NotFoundError } from '@repo/shared/models/error';
 
 class LandRaceCreator implements RaceCreator {
     private static readonly BLIP_SPRITE_RADAR_RACE_LAND = 315;
@@ -95,7 +97,7 @@ class LandRaceCreator implements RaceCreator {
         );
     }
 
-    public tryRemoveRacePoint(position: Vector3, removed: { value: RacePointData | null }): boolean {
+    public removeRacePoint(position: Vector3) {
         let closestDistance = Number.MAX_VALUE;
         let closestIdx = -1;
 
@@ -111,8 +113,7 @@ class LandRaceCreator implements RaceCreator {
         }
 
         if (closestIdx === -1) {
-            removed.value = null;
-            return false;
+            return attempt.fail(new NotFoundError());
         }
 
         const closestNode = this.racePointDataList[closestIdx];
@@ -164,13 +165,11 @@ class LandRaceCreator implements RaceCreator {
         }
 
         this.racePointDataList.splice(closestIdx, 1);
-        removed.value = closestNode;
-        return true;
+        return attempt.ok(closestNode);
     }
 
-    public tryGetClosestRaceCheckpointTo(position: Vector3, checkpoint: { value: CheckpointMp | null }): boolean {
+    public getClosestRaceCheckpointTo(position: Vector3) {
         const precision = 0.5;
-        checkpoint.value = null;
 
         let maxSquared = Number.MAX_VALUE;
         let closestCheckpoint: CheckpointMp | null = null;
@@ -193,11 +192,9 @@ class LandRaceCreator implements RaceCreator {
         }
 
         if (closestCheckpoint) {
-            checkpoint.value = closestCheckpoint;
-            return true;
+            return closestCheckpoint;
         }
-
-        return false;
+        return null;
     }
 
     public updateRacePointPosition(checkpoint: CheckpointMp, position: Vector3): boolean {
@@ -246,7 +243,7 @@ class LandRaceCreator implements RaceCreator {
         this.startPointDataList.push(this.createStartPositionData(this.startPointDataList.length, position, rotation));
     }
 
-    public tryRemoveStartPoint(position: Vector3, removed: { value: StartPositionData | null }): boolean {
+    public removeStartPoint(position: Vector3) {
         let closestDistance = Number.MAX_VALUE;
         let closestIdx = -1;
 
@@ -261,8 +258,7 @@ class LandRaceCreator implements RaceCreator {
         }
 
         if (closestIdx === -1) {
-            removed.value = null;
-            return false;
+            return attempt.fail(new NotFoundError());
         }
 
         const closestNode = this.startPointDataList[closestIdx];
@@ -288,8 +284,7 @@ class LandRaceCreator implements RaceCreator {
 
         closestNode.destroy();
         this.startPointDataList.splice(closestIdx, 1);
-        removed.value = closestNode;
-        return true;
+        return attempt.ok(closestNode);
     }
 
     public importStartPoints(points: Array<{ position: Vector3; rotation: Vector3 }>): void {

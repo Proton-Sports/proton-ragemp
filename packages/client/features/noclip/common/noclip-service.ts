@@ -1,137 +1,170 @@
+import type { ScriptCamera } from '@features/camera/common/types';
+import { RageMpScriptCamera } from '@features/camera/ragemp-script-camera';
+import type { RaycastData, RaycastService } from '@features/raycast/common/types';
+
 export interface NoClipService {
     readonly isStarted: boolean;
+    readonly camera: ScriptCamera | null;
     start(): void;
     stop(): void;
 }
 
-export const createRageMpNoClipService = () => {
-    return new RageMpNoClipService();
-};
+export class RageMpNoClipService implements NoClipService {
+    #started = false;
+    #scriptCamera: RageMpScriptCamera | null = null;
 
-class RageMpNoClipService implements NoClipService {
-    private _isStarted = false;
-    private speed = 1.0;
-    private renderEventId: number | null = null;
+    readonly #raycastService: RaycastService;
+    readonly #ActionForward = 32;
+    readonly #ActionBackward = 33;
+    readonly #ActionLeft = 34;
+    readonly #ActionRight = 35;
+    readonly #ActionUp = 22;
+    readonly #ActionDown = 36;
+    readonly #ActionShift = 21;
+    readonly #ActionNextCamera = 0;
+    #raycasting = false;
+    #lastRaycastData: RaycastData | null = null;
+
+    constructor(raycastService: RaycastService) {
+        this.#raycastService = raycastService;
+    }
+
+    public get camera() {
+        return this.#scriptCamera;
+    }
 
     public get isStarted(): boolean {
-        return this._isStarted;
+        return this.#started;
     }
 
     public start(): void {
-        if (this._isStarted) return;
+        if (this.#started) return;
 
-        this._isStarted = true;
+        this.#started = true;
         mp.players.local.freezePosition(true);
         mp.players.local.setInvincible(true);
         mp.players.local.setVisible(false, false);
-        mp.game.graphics.transitionToBlurred(100);
 
-        // Add render event to handle noclip movement
-        this.renderEventId = mp.events.add('render', this.handleNoClipMovement) as unknown as number;
+        // Create script camera at player position
+        const playerPos = mp.players.local.position;
+        const gameplayCamRot = mp.game.cam.getGameplayCamRot(2);
+
+        const camera = mp.cameras.new(
+            'DEFAULT_SCRIPTED_CAMERA',
+            playerPos,
+            gameplayCamRot,
+            mp.game.cam.getGameplayFov(),
+        );
+        this.#scriptCamera = new RageMpScriptCamera(camera);
+        this.#scriptCamera.active = true;
+        this.#scriptCamera.render();
+
+        mp.events.add('render', this.#handleNoClipMovement) as unknown as number;
     }
 
     public stop(): void {
-        if (!this._isStarted) return;
+        if (!this.#started) return;
 
-        this._isStarted = false;
+        this.#started = false;
         mp.players.local.freezePosition(false);
         mp.players.local.setInvincible(false);
         mp.players.local.setVisible(true, false);
-        mp.game.graphics.transitionFromBlurred(100);
 
-        // Remove render event
-        if (this.renderEventId !== null) {
-            mp.events.remove('render', this.handleNoClipMovement);
-            this.renderEventId = null;
+        // Clean up script camera
+        if (this.#scriptCamera) {
+            this.#scriptCamera.unrender();
+            this.#scriptCamera.destroy();
+            this.#scriptCamera = null;
         }
+
+        mp.events.remove('render', this.#handleNoClipMovement);
     }
 
-    private handleNoClipMovement = () => {
-        // Disable all game controls except the ones we need
-        mp.game.controls.disableAllControlActions(0);
+    #handleNoClipMovement = () => {
+        if (!this.#scriptCamera) return;
 
-        // Get camera direction
-        const camRot = mp.game.cam.getGameplayCamRot(2);
-        const camDir = this.rotationToDirection(camRot);
-        const position = mp.players.local.position;
+        let speed = 1;
 
-        // Set movement speed
-        if (mp.game.controls.isDisabledControlPressed(0, 17)) {
-            // Control: W
-            this.speed += 0.1;
-        } else if (mp.game.controls.isDisabledControlPressed(0, 16)) {
-            // Control: S
-            this.speed -= 0.1;
+        mp.game.controls.disableControlAction(0, this.#ActionForward, true);
+        mp.game.controls.disableControlAction(0, this.#ActionBackward, true);
+        mp.game.controls.disableControlAction(0, this.#ActionLeft, true);
+        mp.game.controls.disableControlAction(0, this.#ActionRight, true);
+        mp.game.controls.disableControlAction(0, this.#ActionUp, true);
+        mp.game.controls.disableControlAction(0, this.#ActionDown, true);
+        mp.game.controls.disableControlAction(0, this.#ActionShift, true);
+        mp.game.controls.disableControlAction(0, this.#ActionNextCamera, true);
+
+        // Get camera direction vectors
+        const camRot = this.#scriptCamera.rotation;
+        const camForward = this.#scriptCamera.forwardVector;
+        const camRight = this.#getRightVector2D(camRot.multiply(Math.PI / 180));
+        let position = this.#scriptCamera.position.clone();
+
+        if (!this.#raycasting) {
+            this.#raycasting = true;
+            this.#raycastService
+                .raycast(position, position.add(camForward.multiply(1024)))
+                .then((raycasted) => {
+                    if (raycasted.failed) {
+                        return;
+                    }
+                    this.#lastRaycastData = raycasted.data;
+                })
+                .finally(() => {
+                    this.#raycasting = false;
+                });
         }
 
-        // Clamp speed
-        this.speed = Math.max(0.1, Math.min(10.0, this.speed));
+        if (mp.game.controls.isDisabledControlPressed(0, this.#ActionShift)) speed *= 5;
+        if (mp.game.controls.isDisabledControlPressed(0, this.#ActionForward))
+            position = position.add(camForward.multiply(speed));
+        if (mp.game.controls.isDisabledControlPressed(0, this.#ActionBackward))
+            position = position.subtract(camForward.multiply(speed));
+        if (mp.game.controls.isDisabledControlPressed(0, this.#ActionLeft))
+            position = position.subtract(camRight.multiply(speed));
+        if (mp.game.controls.isDisabledControlPressed(0, this.#ActionRight))
+            position = position.add(camRight.multiply(speed));
+        if (mp.game.controls.isDisabledControlPressed(0, this.#ActionUp)) position.z += speed;
+        if (mp.game.controls.isDisabledControlPressed(0, this.#ActionDown)) position.z -= speed;
 
-        // Calculate new position based on controls
-        let newPos = position.clone();
-
-        // Forward/backward
-        if (mp.game.controls.isDisabledControlPressed(0, 32)) {
-            // Control: W
-            newPos = new mp.Vector3(
-                position.x + camDir.x * this.speed,
-                position.y + camDir.y * this.speed,
-                position.z + camDir.z * this.speed,
-            );
-        } else if (mp.game.controls.isDisabledControlPressed(0, 33)) {
-            // Control: S
-            newPos = new mp.Vector3(
-                position.x - camDir.x * this.speed,
-                position.y - camDir.y * this.speed,
-                position.z - camDir.z * this.speed,
-            );
-        }
-
-        // Left/right
-        if (mp.game.controls.isDisabledControlPressed(0, 34)) {
-            // Control: A
-            const rightVector = this.getRightVector(camRot);
-            newPos = new mp.Vector3(
-                newPos.x - rightVector.x * this.speed,
-                newPos.y - rightVector.y * this.speed,
-                newPos.z - rightVector.z * this.speed,
-            );
-        } else if (mp.game.controls.isDisabledControlPressed(0, 35)) {
-            // Control: D
-            const rightVector = this.getRightVector(camRot);
-            newPos = new mp.Vector3(
-                newPos.x + rightVector.x * this.speed,
-                newPos.y + rightVector.y * this.speed,
-                newPos.z + rightVector.z * this.speed,
+        if (this.#lastRaycastData?.isHit === true) {
+            mp.game.graphics.drawSphere(
+                this.#lastRaycastData.endPosition.x,
+                this.#lastRaycastData.endPosition.y,
+                this.#lastRaycastData.endPosition.z,
+                2,
+                255,
+                0,
+                0,
+                255,
             );
         }
 
-        // Up/down
-        if (mp.game.controls.isDisabledControlPressed(0, 44)) {
-            // Control: Q
-            newPos = new mp.Vector3(newPos.x, newPos.y, newPos.z - this.speed);
-        } else if (mp.game.controls.isDisabledControlPressed(0, 38)) {
-            // Control: E
-            newPos = new mp.Vector3(newPos.x, newPos.y, newPos.z + this.speed);
+        // Handle mouse look
+        const mouseX = mp.game.controls.getDisabledControlNormal(1, 1);
+        const mouseY = mp.game.controls.getDisabledControlNormal(1, 2);
+        const mouseSens = mp.game.gameplay.getProfileSetting(13);
+
+        const finalRot = new mp.Vector3(camRot.x - mouseY * mouseSens, camRot.y, camRot.z - mouseX * mouseSens);
+
+        // Clamp pitch rotation
+        if (finalRot.x >= 89) {
+            finalRot.x = 89;
+        }
+        if (finalRot.x <= -89) {
+            finalRot.x = -89;
         }
 
-        // Set new position
-        mp.players.local.setCoordsNoOffset(newPos.x, newPos.y, newPos.z, false, false, false);
+        // Update camera position and rotation
+        this.#scriptCamera.position = position;
+        this.#scriptCamera.rotation = finalRot;
+        mp.players.local.setRotation(finalRot.x, finalRot.y, finalRot.z, 2, true);
+
+        // Keep player at camera position for collision and other systems
+        mp.players.local.setCoordsNoOffset(position.x, position.y, position.z, false, false, false);
     };
 
-    private rotationToDirection(rotation: Vector3): Vector3 {
-        const z = rotation.z * (Math.PI / 180.0);
-        const x = rotation.x * (Math.PI / 180.0);
-        const num = Math.abs(Math.cos(x));
-
-        return new mp.Vector3(-Math.sin(z) * num, Math.cos(z) * num, Math.sin(x));
-    }
-
-    private getRightVector(rotation: Vector3): Vector3 {
-        const z = rotation.z * (Math.PI / 180.0) + Math.PI / 2.0;
-        const x = rotation.x * (Math.PI / 180.0);
-        const num = Math.abs(Math.cos(x));
-
-        return new mp.Vector3(-Math.sin(z) * num, Math.cos(z) * num, Math.sin(x));
+    #getRightVector2D(rotation: Vector3) {
+        return new mp.Vector3(Math.cos(rotation.z), Math.sin(rotation.z), 0);
     }
 }

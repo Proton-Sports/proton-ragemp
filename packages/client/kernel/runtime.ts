@@ -4,6 +4,7 @@ import type { IplService } from '@features/ipls/common/ipl-service';
 import type { NoClipService } from '@features/noclip/common/noclip-service';
 import type { RaceCreator } from '@features/races/common/race-creator';
 import type { RaceService } from '@features/races/common/race-service';
+import type { RaycastService } from '@features/raycast/common/types';
 import type { Ui } from '@features/ui';
 import type { Game } from './game';
 import type { Logger } from './logger';
@@ -21,4 +22,5 @@ export interface Runtime {
     readonly raceCreator: RaceCreator;
     readonly raceService: RaceService;
     readonly streamedMetaStore: StreamedMetaStore;
+    readonly raycastService: RaycastService;
 }

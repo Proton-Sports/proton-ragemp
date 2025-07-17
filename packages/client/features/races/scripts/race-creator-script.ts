@@ -1,11 +1,15 @@
+import type { ScriptCamera } from '@features/camera/common/types';
 import { createScript } from '@kernel/script';
-import { RacePointData } from '../common/race-point-data';
 import { RaceStatus } from '../common/race-status';
-import { StartPositionData } from '../common/start-position-data';
+
+enum PointType {
+    Start,
+    Race,
+}
 
 export default createScript({
-    name: 'race-creator',
-    fn: ({ ui, messenger, ipl, raceCreator, raceService }) => {
+    name: 'race-creator-migrated',
+    fn: ({ ui, messenger, ipl, raceCreator, raceService, raycastService, noclip }) => {
         let focusing = false;
         let canSwitch = true;
         let pointType = PointType.Start;
@@ -14,44 +18,45 @@ export default createScript({
         let iplName: string | null = null;
         let movingRaceCheckpoint: CheckpointMp | null = null;
 
+        // Server event handlers
         messenger.on('race:creator:stop', () => {
             handleServerStop();
         });
 
-        messenger.on('race-menu-creator:data', (dto) => {
+        messenger.on('race-menu-creator:data', (dto: any) => {
             handleServerData(dto);
         });
 
-        messenger.on('race-menu-creator:editMap', async (map) => {
+        messenger.on('race-menu-creator:editMap', async (map: any) => {
             await handleServerEditMapAsync(map);
         });
 
-        messenger.on('race-menu-creator:deleteMap', (id) => {
-            handleServerDeleteMap(id);
+        messenger.on('race-menu-creator:deleteMap', (mapId: number) => {
+            handleServerDeleteMap(mapId);
         });
 
-        messenger.on('race-menu-creator:createMap', (dto) => {
+        messenger.on('race-menu-creator:createMap', (dto: any) => {
             onServerCreateMap(dto);
         });
 
+        // UI event handlers
         ui.on('race-menu-creator:data', () => {
             handleData();
         });
 
-        ui.on('race:creator:changeMode', (mode) => {
-            mp.console.logInfo('race:creator:changeMode, ' + mode);
+        ui.on('race:creator:changeMode', (mode: string) => {
             handleChangeMode(mode);
         });
 
-        ui.on('race-menu-creator:createMap', (mapName, iplName) => {
-            handleCreateMap(mapName, iplName);
+        ui.on('race-menu-creator:createMap', (mapName: string, mapIplName: string) => {
+            handleCreateMap(mapName, mapIplName);
         });
 
-        ui.on('race-menu-creator:deleteMap', (mapId) => {
+        ui.on('race-menu-creator:deleteMap', (mapId: number) => {
             handleDeleteMap(mapId);
         });
 
-        ui.on('race-menu-creator:editMap', (mapId, type) => {
+        ui.on('race-menu-creator:editMap', (mapId: number, type: string) => {
             handleEditMap(mapId, type);
         });
 
@@ -79,20 +84,7 @@ export default createScript({
             raceCreator.clearStartPoints();
             raceCreator.clearRacePoints();
             ui.router.mount('race-creator');
-            mp.keys.bind(0x26, false, handleKeyUp); // Up arrow
-            mp.keys.bind(0x28, false, handleKeyDown); // Down arrow
-            mp.keys.bind(0x25, false, handleKeyLeft); // Left arrow
-            mp.keys.bind(0x27, false, handleKeyRight); // Right arrow
-            mp.keys.bind(0x5a, false, handleKeyZ); // Z key
-            mp.keys.bind(0x58, false, handleKeyX); // X key
-            mp.keys.bind(0x31, false, handleKey1); // 1 key
-            mp.keys.bind(0x32, false, handleKey2); // 2 key
-            mp.keys.bind(0x55, false, handleKeyU); // U key
-            mp.keys.bind(0x4e, false, handleKeyN); // N key
-            mp.keys.bind(0x4d, false, handleKeyM); // M key
-            mp.keys.bind(0x21, false, handleKeyPageUp); // Page Up
-            mp.keys.bind(0x22, false, handleKeyPageDown); // Page Down
-            mp.game.controls.enableControlAction(0, 1, true); // Enable controls
+            bindKeys();
         }
 
         function handleDeleteMap(mapId: number) {
@@ -133,20 +125,7 @@ export default createScript({
             raceCreator.clearStartPoints();
             raceCreator.clearRacePoints();
             pointType = PointType.Start;
-
-            mp.keys.unbind(0x26, false, handleKeyUp);
-            mp.keys.unbind(0x28, false, handleKeyDown);
-            mp.keys.unbind(0x25, false, handleKeyLeft);
-            mp.keys.unbind(0x27, false, handleKeyRight);
-            mp.keys.unbind(0x5a, false, handleKeyZ);
-            mp.keys.unbind(0x58, false, handleKeyX);
-            mp.keys.unbind(0x31, false, handleKey1);
-            mp.keys.unbind(0x32, false, handleKey2);
-            mp.keys.unbind(0x55, false, handleKeyU);
-            mp.keys.unbind(0x4e, false, handleKeyN);
-            mp.keys.unbind(0x4d, false, handleKeyM);
-            mp.keys.unbind(0x21, false, handleKeyPageUp);
-            mp.keys.unbind(0x22, false, handleKeyPageDown);
+            unbindKeys();
 
             if (iplName) {
                 await ipl.unloadAsync(iplName);
@@ -154,66 +133,112 @@ export default createScript({
             }
         }
 
-        function handleKeyUp() {
-            if (mp.gui.cursor.visible || focusing) {
-                return;
-            }
-
-            // Handle no-clip camera here if needed
+        function bindKeys() {
+            mp.keys.bind(0x01, false, handleLeftClick); // Left mouse button
+            mp.keys.bind(0x02, false, handleRightClick); // Right mouse button
+            mp.keys.bind(0x5a, false, handleKeyZ); // Z key
+            mp.keys.bind(0x58, false, handleKeyX); // X key
+            mp.keys.bind(0x31, false, handleKey1); // 1 key
+            mp.keys.bind(0x32, false, handleKey2); // 2 key
+            mp.keys.bind(0x55, false, handleKeyU); // U key
+            mp.keys.bind(0x4e, false, handleKeyN); // N key
+            mp.keys.bind(0x4d, false, handleKeyM); // M key
         }
 
-        function handleKeyDown() {
-            if (mp.gui.cursor.visible || focusing) {
-                return;
-            }
-
-            // Handle no-clip camera here if needed
+        function unbindKeys() {
+            mp.keys.unbind(0x01, false, handleLeftClick);
+            mp.keys.unbind(0x02, false, handleRightClick);
+            mp.keys.unbind(0x5a, false, handleKeyZ);
+            mp.keys.unbind(0x58, false, handleKeyX);
+            mp.keys.unbind(0x31, false, handleKey1);
+            mp.keys.unbind(0x32, false, handleKey2);
+            mp.keys.unbind(0x55, false, handleKeyU);
+            mp.keys.unbind(0x4e, false, handleKeyN);
+            mp.keys.unbind(0x4d, false, handleKeyM);
         }
 
-        function handleKeyLeft() {
-            if (mp.gui.cursor.visible || focusing) {
+        async function handleLeftClick() {
+            if (!noclip.isStarted || focusing) {
                 return;
             }
 
-            // Handle no-clip camera here if needed
+            const camera = noclip.camera;
+            if (!camera) return;
+
+            const raycasted = await raycast(camera);
+            if (raycasted.failed) {
+                return;
+            }
+
+            if (raycasted.data.isHit) {
+                const rotation = camera.rotation;
+                const rotZ = (rotation.z * Math.PI) / 180;
+
+                switch (pointType) {
+                    case PointType.Start:
+                        raceCreator.addStartPoint(raycasted.data.endPosition, new mp.Vector3(0, 0, rotZ));
+                        break;
+                    case PointType.Race:
+                        raceCreator.addRacePoint(raycasted.data.endPosition, 4.0);
+                        break;
+                }
+            }
         }
 
-        function handleKeyRight() {
-            if (mp.gui.cursor.visible || focusing) {
+        async function handleRightClick() {
+            if (!noclip.isStarted || focusing) {
                 return;
             }
 
-            // Handle no-clip camera here if needed
+            const camera = noclip.camera;
+            if (!camera) return;
+
+            const raycasted = await raycast(camera);
+            if (raycasted.failed) {
+                return;
+            }
+
+            switch (pointType) {
+                case PointType.Start:
+                    raceCreator.removeStartPoint(raycasted.data.endPosition);
+                    break;
+                case PointType.Race:
+                    const removed = raceCreator.removeRacePoint(raycasted.data.endPosition);
+                    if (removed.ok && removed.data.checkpoint === movingRaceCheckpoint) {
+                        movingRaceCheckpoint = null;
+                    }
+                    break;
+            }
         }
 
         function handleKeyZ() {
-            if (mp.gui.cursor.visible) {
+            if (noclip.isStarted) {
                 return;
             }
 
             const player = mp.players.local;
-            const position = player.position;
+            let position = player.position;
 
             // Get ground Z coordinate
             const groundZ = mp.game.gameplay.getGroundZFor3dCoord(position.x, position.y, position.z, false, false);
-            if (!groundZ) {
+            if (groundZ !== undefined) {
+                position = new mp.Vector3(position.x, position.y, groundZ);
+            } else {
                 return;
             }
 
-            const groundPosition = new mp.Vector3(position.x, position.y, groundZ);
-
             switch (pointType) {
                 case PointType.Start:
-                    raceCreator.addStartPoint(groundPosition, player.getRotation(0));
+                    raceCreator.addStartPoint(position, player.getRotation(0));
                     break;
                 case PointType.Race:
-                    raceCreator.addRacePoint(groundPosition, 4.0);
+                    raceCreator.addRacePoint(position, 4.0);
                     break;
             }
         }
 
         function handleKeyX() {
-            if (mp.gui.cursor.visible) {
+            if (noclip.isStarted) {
                 return;
             }
 
@@ -221,21 +246,12 @@ export default createScript({
 
             switch (pointType) {
                 case PointType.Start:
-                    {
-                        const removed = { value: null as StartPositionData | null };
-                        raceCreator.tryRemoveStartPoint(position, removed);
-                    }
+                    raceCreator.removeStartPoint(position);
                     break;
                 case PointType.Race:
-                    {
-                        const removed = { value: null as RacePointData | null };
-                        if (
-                            raceCreator.tryRemoveRacePoint(position, removed) &&
-                            removed.value &&
-                            removed.value.checkpoint === movingRaceCheckpoint
-                        ) {
-                            movingRaceCheckpoint = null;
-                        }
+                    const removed = raceCreator.removeRacePoint(position);
+                    if (removed.ok && removed.data.checkpoint === movingRaceCheckpoint) {
+                        movingRaceCheckpoint = null;
                     }
                     break;
             }
@@ -245,7 +261,6 @@ export default createScript({
             if (!canSwitch || pointType === PointType.Start) {
                 return;
             }
-
             pointType = PointType.Start;
         }
 
@@ -253,81 +268,75 @@ export default createScript({
             if (!canSwitch || pointType === PointType.Race) {
                 return;
             }
-
             pointType = PointType.Race;
         }
 
-        function handleKeyU() {
-            const position = mp.players.local.position;
+        async function handleKeyU() {
+            const position = await getValidPosition();
+            if (!position) return;
 
-            // Get ground Z coordinate
-            const groundZ = mp.game.gameplay.getGroundZFor3dCoord(position.x, position.y, position.z, false, false);
-            if (!groundZ) {
-                return;
-            }
-
-            const groundPosition = new mp.Vector3(position.x, position.y, groundZ);
-
-            const checkpoint = { value: null as CheckpointMp | null };
-            if (raceCreator.tryGetClosestRaceCheckpointTo(groundPosition, checkpoint) && checkpoint.value) {
+            const checkpoint = raceCreator.getClosestRaceCheckpointTo(position);
+            if (checkpoint) {
                 // TODO: Increase radius by 0.5 units
-                // checkpoint.value.scale += 0.5;
+                // checkpoint.radius = (checkpointRef.value.radius || 4.0) + 0.5;
             }
         }
 
-        function handleKeyN() {
-            const position = mp.players.local.position;
+        async function handleKeyN() {
+            const position = await getValidPosition();
+            if (!position) return;
 
-            // Get ground Z coordinate
-            const groundZ = mp.game.gameplay.getGroundZFor3dCoord(position.x, position.y, position.z, false, false);
-            if (!groundZ) {
-                return;
-            }
-
-            const groundPosition = new mp.Vector3(position.x, position.y, groundZ);
-
-            const checkpoint = { value: null as CheckpointMp | null };
-            if (raceCreator.tryGetClosestRaceCheckpointTo(groundPosition, checkpoint) && checkpoint.value) {
+            const checkpoint = raceCreator.getClosestRaceCheckpointTo(position);
+            if (checkpoint) {
                 // TODO: Decrease radius by 0.5 units, minimum 1.0
-                // checkpoint.value.scale = Math.max(1.0, checkpoint.value.scale - 0.5);
+                // checkpointRef.value.radius = Math.max(1.0, (checkpointRef.value.radius || 4.0) - 0.5);
             }
         }
 
-        function handleKeyM() {
-            const position = mp.players.local.position;
+        async function handleKeyM() {
+            const position = await getValidPosition();
+            if (!position) return;
 
-            // Get ground Z coordinate
-            const groundZ = mp.game.gameplay.getGroundZFor3dCoord(position.x, position.y, position.z, false, false);
-            if (!groundZ) {
-                return;
-            }
-
-            const groundPosition = new mp.Vector3(position.x, position.y, groundZ);
-
-            const checkpoint = { value: null as CheckpointMp | null };
-            if (raceCreator.tryGetClosestRaceCheckpointTo(groundPosition, checkpoint) && checkpoint.value) {
+            const checkpoint = raceCreator.getClosestRaceCheckpointTo(position);
+            if (checkpoint) {
                 if (movingRaceCheckpoint) {
                     // TODO: Reset color of previous moving checkpoint
-                    // movingRaceCheckpoint.color = [255, 255, 255, 255];
+                    // movingRaceCheckpoint.color = { r: 255, g: 255, b: 255, a: 255 };
                 }
-
-                movingRaceCheckpoint = checkpoint.value;
-                // movingRaceCheckpoint.color = [0, 255, 0, 255];
+                movingRaceCheckpoint = checkpoint;
+                // TODO: Set color of moving checkpoint to green
+                // movingRaceCheckpoint.color = { r: 0, g: 255, b: 0, a: 255 };
             } else if (movingRaceCheckpoint) {
-                raceCreator.updateRacePointPosition(movingRaceCheckpoint, groundPosition);
-                // movingRaceCheckpoint.color = [255, 255, 255, 255];
+                raceCreator.updateRacePointPosition(movingRaceCheckpoint, position);
+                // TODO: Set color of moving checkpoint to green
+                // movingRaceCheckpoint.color = { r: 255, g: 255, b: 255, a: 255 };
                 movingRaceCheckpoint = null;
             }
         }
 
-        function handleKeyPageUp() {
-            if (focusing) {
-                unfocus();
-            }
-        }
+        async function getValidPosition() {
+            let position = mp.players.local.position;
 
-        function handleKeyPageDown() {
-            focus();
+            if (!noclip.isStarted) {
+                // Get ground Z coordinate
+                const groundZ = mp.game.gameplay.getGroundZFor3dCoord(position.x, position.y, position.z, false, false);
+                if (groundZ !== undefined) {
+                    position = new mp.Vector3(position.x, position.y, groundZ);
+                } else {
+                    return null;
+                }
+            } else {
+                const camera = noclip.camera;
+                if (!camera) return;
+
+                const raycasted = await raycast(camera);
+                if (raycasted.failed || !raycasted.data.isHit) {
+                    return;
+                }
+                position = raycasted.data.endPosition;
+            }
+
+            return position;
         }
 
         function unfocus() {
@@ -374,25 +383,20 @@ export default createScript({
             }
 
             ui.router.mount('race-creator');
-            mp.keys.bind(0x26, false, handleKeyUp); // Up arrow
-            mp.keys.bind(0x28, false, handleKeyDown); // Down arrow
-            mp.keys.bind(0x25, false, handleKeyLeft); // Left arrow
-            mp.keys.bind(0x27, false, handleKeyRight); // Right arrow
-            mp.keys.bind(0x5a, false, handleKeyZ); // Z key
-            mp.keys.bind(0x58, false, handleKeyX); // X key
-            mp.keys.bind(0x31, false, handleKey1); // 1 key
-            mp.keys.bind(0x32, false, handleKey2); // 2 key
-            mp.keys.bind(0x55, false, handleKeyU); // U key
-            mp.keys.bind(0x4e, false, handleKeyN); // N key
-            mp.keys.bind(0x4d, false, handleKeyM); // M key
-            mp.keys.bind(0x21, false, handleKeyPageUp); // Page Up
-            mp.keys.bind(0x22, false, handleKeyPageDown); // Page Down
+            bindKeys();
             mp.game.controls.enableControlAction(0, 1, true);
+        }
+
+        async function raycast(camera: ScriptCamera) {
+            const position = camera.position;
+            const forwardVector = camera.forwardVector;
+            const endPosition = new mp.Vector3(
+                position.x + forwardVector.x * 1000,
+                position.y + forwardVector.y * 1000,
+                position.z + forwardVector.z * 1000,
+            );
+
+            return await raycastService.raycast(position, endPosition);
         }
     },
 });
-
-enum PointType {
-    Start,
-    Race,
-}
